@@ -1,0 +1,3 @@
+function main(){
+    printf('OK')
+}
