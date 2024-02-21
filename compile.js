@@ -54,7 +54,7 @@ function ParseBlocks(ROOTSource){
 
 
 
-
+var FRM = 'cmd'
 
 
 
@@ -79,7 +79,11 @@ function Parse(filePath,mainFile=false){
 
     source = ParseBlocks(source)
 
-    
+    source = source.replace(/\/\/app:gl/gm,match=>{
+        FRM = 'opengl'
+        return ''
+    })
+
     //clean code
     source = source.replace(/\/\/[\s\S]+?$/gm,'')
     source = source.replace(/\/\*[\s\S]+?\*\//gm,'')
@@ -208,7 +212,7 @@ function Parse(filePath,mainFile=false){
 
 
     if(mainFile){
-        let frame = fs.readFileSync('./frames/cmd.asm').toString()
+        let frame = fs.readFileSync('./frames/'+FRM+'.asm').toString()
         source = frame.replace(/{{SOURCE}}/gm,source)
     }
 
