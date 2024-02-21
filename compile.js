@@ -63,10 +63,11 @@ function Parse(filePath,mainFile=false){
 
     source = ParseBlocks(source)
 
+    
+    //clean code
+    source = source.replace(/\/\/[\s\S]+?$/gm,'')
+    source = source.replace(/\/\*[\s\S]+?\*\//gm,'')
 
-    for(let invoke of idata){
-        r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
-    }
 
     r(/\'/gm,'"')
 
@@ -84,6 +85,15 @@ function Parse(filePath,mainFile=false){
     })
 
     r(/var (.*)/gm,'$1')
+
+    for(let invoke of idata){
+        r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
+    }
+
+
+
+
+
 
 
     if(mainFile){
