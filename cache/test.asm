@@ -10,8 +10,11 @@ include 'include\opengl.inc'
 
 ;section '.text' code readable executable
 
+prop1 = 23.99
+prop2 = "END"
+prop3 = 2.23
 macro main 
-            invoke printf, "OK"
+            invoke printf, "OK %f %s",prop1*prop3,prop2
         end macro
 
     start:

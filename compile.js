@@ -83,6 +83,8 @@ function Parse(filePath,mainFile=false){
         end macro`
     })
 
+    r(/var (.*)/gm,'$1')
+
 
     if(mainFile){
         source=`
