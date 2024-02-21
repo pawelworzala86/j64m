@@ -127,30 +127,26 @@ function Parse(filePath,mainFile=false){
             var params = FUNC.params
             params=params.length?(','+params):''
             data = data.replace(/this\.([a-zA-Z0-9\_]+)\(/gm,name+'_$1(self,')
-            //console.log(data)
+
             ClassINDEX++
             functions.push('function '+name+'_'+func+'(this'+params+'):'+ClassINDEX+'{\n'+data+'\n:'+ClassINDEX+'}\n')
         }
-        //console.log(functions)
 
         return `struct ${name}
             ${fields.join('\n')}
         ends
         ${functions.join('\n')}`
     })
-    //fs.writeFileSync('./cache/objected.js',source)
     console.log('OBJECTS',OBJECTS)
     source = source.replace(/var [a-zA-Z0-9]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
-        //console.log('params',params)
         OBJ.params.push(params[1])
         return `${params[1]} ${params[4].replace('()','')}`
     })
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
         for(const param of OBJ.params){
-            //var FUNC = OBJ.funcs[func]
             source = source.replace(new RegExp(param+'\\.[a-zA-Z0-9\_]+\\(','gm'),match=>{
                 var obj = match.split('.')[0]
                 var func = match.split('.')[1].split('(')[0]
@@ -208,36 +204,12 @@ function Parse(filePath,mainFile=false){
 
 
 
-
+    
 
 
     if(mainFile){
-        source=`
-; OpenGL programming example
-
-include 'win64a.inc'
-
-format PE64 CONSOLE 5.0
-entry start
-
-include 'include\\opengl.inc'
-
-;section '.text' code readable executable
-
-${source}
-
-    start:
-    sub	rsp,8		; Make stack dqword aligned
-
-    main
-
-    invoke	ExitProcess,0
-
-;section '.data' data readable writeable
-
-section '.idata' import data readable writeable
-    include 'include\\idata.inc'
-`
+        let frame = fs.readFileSync('./frames/cmd.asm').toString()
+        source = frame.replace(/{{SOURCE}}/gm,source)
     }
 
 

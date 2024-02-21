@@ -6,7 +6,7 @@ include 'win64a.inc'
 format PE64 CONSOLE 5.0
 entry start
 
-include 'include\opengl.inc'
+include 'include\\opengl.inc'
 
 ;section '.text' code readable executable
 
@@ -49,4 +49,4 @@ resA = rax
 ;section '.data' data readable writeable
 
 section '.idata' import data readable writeable
-    include 'include\idata.inc'
+    include 'include\\idata.inc'
