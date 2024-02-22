@@ -24,6 +24,13 @@ else if
         invoke printf, "OK"
     
 end if
+    testA = 10
+    while testA>0
+
+        testA =         testA - 1
+        invoke printf, "OK"
+    
+end while
         end macro
 
     start:

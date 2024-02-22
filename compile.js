@@ -98,6 +98,11 @@ function Parse(filePath,mainFile=false){
         'if $1\n$3\nelse if\n$6\nend if')
     r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
         'if $1\n$3\nend if')
+    r(/while\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
+        'while $1\n$3\nend while')
+
+    r(/(.*)\-\-/gm,'$1 = $1 - 1')
+    r(/(.*)\+\+/gm,'$1 = $1 + 1')
 
 
 

@@ -8,4 +8,9 @@ function main(){
     }else{
         printf('OK')
     }
+    var testA = 10
+    while(testA>0){
+        testA--
+        printf('OK')
+    }
 }
