@@ -8,7 +8,7 @@ entry start
 
 include 'include\\opengl.inc'
 
-;section '.text' code readable executable
+section '.text' code readable executable
 
 {{SOURCE}}
 
@@ -19,7 +19,11 @@ include 'include\\opengl.inc'
 
     invoke	ExitProcess,0
 
-;section '.data' data readable writeable
+section '.data' data readable writeable
+    lf db 13,10,0
+
+    {{DATA}}
+
 
 section '.idata' import data readable writeable
     include 'include\\idata.inc'

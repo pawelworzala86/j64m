@@ -61,7 +61,7 @@ var FRM = 'cmd'
 
 var OBJECTS = {}
 var MACROS = []
-
+var DATA = []
 
 
 
@@ -169,7 +169,9 @@ function Parse(filePath,mainFile=false){
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/return (.*)/gm,'mov rax, $1')
 
-
+    r(/^(.*) dq (.*)$/gm,match=>{
+        DATA.push(match)
+    })
 
 
 
@@ -214,6 +216,7 @@ function Parse(filePath,mainFile=false){
     if(mainFile){
         let frame = fs.readFileSync('./frames/'+FRM+'.asm').toString()
         source = frame.replace(/{{SOURCE}}/gm,source)
+        source = source.replace(/{{DATA}}/gm,DATA.join('\n'))
     }
 
 
