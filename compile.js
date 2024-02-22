@@ -85,8 +85,8 @@ function Parse(filePath,mainFile=false){
     })
 
     //clean code
-    source = source.replace(/\/\/[\s\S]+?$/gm,'')
-    source = source.replace(/\/\*[\s\S]+?\*\//gm,'')
+    r(/\/\/[\s\S]+?$/gm,'')
+    r(/\/\*[\s\S]+?\*\//gm,'')
 
 
     r(/\'/gm,'"')
@@ -94,13 +94,16 @@ function Parse(filePath,mainFile=false){
 
 
 
-
+    r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}else(?<num2>\:[0-9]+)\{([\s\S]+?)(\k<num2>)\}/gm,
+        'if $1\n$3\nelse if\n$6\nend if')
+    r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
+        'if $1\n$3\nend if')
 
 
 
 
     var ClassINDEX = 0
-    source = source.replace(/^class([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
+    r(/^class([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
         var name = match.split(' ')[1].replace('{','').trim().split(':')[0]
 
         const fields=[]
@@ -169,7 +172,7 @@ function Parse(filePath,mainFile=false){
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/return (.*)/gm,'mov rax, $1')
 
-    r(/^(.*) dq (.*)$/gm,match=>{
+    r(/^(.*) (dq|dd,db|rq) (.*)$/gm,match=>{
         DATA.push(match)
     })
 

@@ -3,4 +3,9 @@ var prop2 = 'END'
 var prop3 = 2.23
 function main(){
     printf('OK %f %s',prop1*prop3,prop2)
+    if(1<2){
+        printf('OK')
+    }else{
+        printf('OK')
+    }
 }
