@@ -201,9 +201,16 @@ function Parse(filePath,mainFile=false){
         body.splice(body.length-1,1)
         body = body.join('\n')
         console.log(name,params,body)
-        return `macro ${name} ${params}
-        ${body}
-        end macro`
+        if(name.indexOf('Proc')>-1){
+            return `proc ${name} ${params}
+            ${body}
+            ret
+            endp`
+        }else{
+            return `macro ${name} ${params}
+            ${body}
+            end macro`
+        }
     })
 
     r(/var (.*)/gm,'$1')

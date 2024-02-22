@@ -75,6 +75,7 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	invoke	wglMakeCurrent,[hdc],[hrc]
 	invoke	GetClientRect,[hwnd],addr rc
 	invoke	glViewport,0,0,[rc.right],[rc.bottom]
+	call ProcInit
 	invoke	GetTickCount
 	mov	[clock],eax
 	xor	eax,eax
@@ -90,22 +91,13 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	cmp	eax,10
 	jb	.animation_ok
 	add	[clock],eax
-	invoke	glRotatef,float [theta],float dword 0.0,float dword 0.0,float dword 1.0
+	;invoke	glRotatef,float [theta],float dword 0.0,float dword 0.0,float dword 1.0
       .animation_ok:
-	invoke	glClear,GL_COLOR_BUFFER_BIT
-	invoke	glBegin,GL_QUADS
-	invoke	glColor3f,float dword 1.0,float dword 0.1,float dword 0.1
-	invoke	glVertex3d,float -0.6,float -0.6,float 0.0
-	invoke	glColor3f,float dword 0.1,float dword 0.1,float dword 0.1
-	invoke	glVertex3d,float 0.6,float -0.6,float 0.0
-	invoke	glColor3f,float dword 0.1,float dword 0.1,float dword 1.0
-	invoke	glVertex3d,float 0.6,float 0.6,float 0.0
-	invoke	glColor3f,float dword 1.0,float dword 0.1,float dword 1.0
-	invoke	glVertex3d,float -0.6,float 0.6,float 0.0
-	invoke	glEnd
 
 	invoke GetCursorPos, pos
-    invoke printf, "%i %i %s", [pos.x], [pos.y], lf
+    ;invoke printf, "%i %i %s", [pos.x], [pos.y], lf
+
+	call ProcRender
 
 	invoke	SwapBuffers,[hdc]
 	xor	eax,eax
