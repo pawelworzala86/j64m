@@ -8,13 +8,15 @@ function ReadFileData(fileName){
     mov [handle], rax
     GetFileSize([handle], 0)
     mov [fsize], rax
-    //printf('fsize %i',fsize)
+    printf('fsize %i',[fsize])
     malloc([fsize])
     mov [buffor], rax
     //;mov rbx, rax
-    ReadFile([handle], [buffor], 11, 0, 0)
+    ReadFile([handle], [buffor], [fsize], 0, 0)
     printf('%s',[buffor])
     CloseHandle([handle])
+
+    //.testA:
     /*handle = fopen(fileName, 'rb')
     printf('handle %i',handle)
     fseek(handle, 0, 2)//SEEK_END
@@ -28,5 +30,5 @@ function ReadFileData(fileName){
 }
 function main(){
     ReadFileData('test.txt')
-    //printf('%s',[buffor])
+    ReadFileData('test.txt')
 }

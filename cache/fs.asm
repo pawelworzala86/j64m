@@ -20,18 +20,20 @@ macro ReadFileData fileName
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
-    
+    invoke printf, "fsize %i",[fsize]
     invoke malloc, [fsize]
     mov [buffor], rax
     
-    invoke ReadFile, [handle], [buffor], 11, 0, 0
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0
     invoke printf, "%s",[buffor]
     invoke CloseHandle, [handle]
+
+    
     
             end macro
 macro main 
                 ReadFileData "test.txt"
-    
+    ReadFileData "test.txt"
             end macro
 
     start:
