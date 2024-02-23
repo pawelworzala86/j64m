@@ -85,8 +85,8 @@ function Parse(filePath,mainFile=false){
     })
 
     //clean code
-    r(/\/\/[\s\S]+?$/gm,'')
     r(/\/\*[\s\S]+?\*\//gm,'')
+    r(/\/\/[\s\S]+?$/gm,'')
 
 
     r(/\'/gm,'"')
@@ -94,12 +94,12 @@ function Parse(filePath,mainFile=false){
 
 
 
-    r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}else(?<num2>\:[0-9]+)\{([\s\S]+?)(\k<num2>)\}/gm,
+    /*r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}else(?<num2>\:[0-9]+)\{([\s\S]+?)(\k<num2>)\}/gm,
         'if $1\n$3\nelse if\n$6\nend if')
     r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
         'if $1\n$3\nend if')
     r(/while\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
-        'while $1\n$3\nend while')
+        'while $1\n$3\nend while')*/
 
     r(/(.*)\-\-/gm,'$1 = $1 - 1')
     r(/(.*)\+\+/gm,'$1 = $1 + 1')
@@ -174,11 +174,13 @@ function Parse(filePath,mainFile=false){
     r(/\,\)/gm,')')
 
 
-    r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
+    r(/var (.*) = (.*\(.*)/gm,'$2\nmov $1, rax')
+    r(/(.*) = (.*\(.*)/gm,'$2\nmov $1, rax')
     r(/return (.*)/gm,'mov rax, $1')
 
     r(/^(.*) (dq|dd,db|rq) (.*)$/gm,match=>{
         DATA.push(match)
+        return ''
     })
 
 
@@ -213,7 +215,13 @@ function Parse(filePath,mainFile=false){
         }
     })
 
-    r(/var (.*)/gm,'$1')
+    r(/var (.*) = (.*)/gm,match=>{
+        match = match.replace('var','').trim()
+        var name = match.split('=')[0].trim()
+        var value = match.split('=')[1].trim()
+        DATA.push(name+' dq '+value)
+        return ''
+    })
 
     for(let invoke of idata){
         r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
@@ -224,7 +232,10 @@ function Parse(filePath,mainFile=false){
     }
 
 
-
+    for(let dat of DATA){
+        var ddd = dat.trim().split(' ')[0]
+        r(new RegExp('('+ddd+')','gm'),'[$1]')
+    }
     
 
 
