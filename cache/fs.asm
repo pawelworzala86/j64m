@@ -13,14 +13,16 @@ section '.text' code readable executable
 
 
 
+
+
 macro ReadFileData fileName
-            invoke CreateFileA, fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
-mov     [handle], rax
-invoke GetFileSize, [handle], 0
-mov     [fsize], rax
+                invoke CreateFileA, fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+    mov [handle], rax
+    invoke GetFileSize, [handle], 0
+    mov [fsize], rax
     
-invoke malloc, [fsize]
-mov     [buffor], rax
+    invoke malloc, [fsize]
+    mov [buffor], rax
     
     invoke ReadFile, [handle], [buffor], 11, 0, 0
     invoke printf, "%s",[buffor]

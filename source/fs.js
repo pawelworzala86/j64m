@@ -1,15 +1,20 @@
-var handle = 0
-var fsize = 0
-var buffor = 0
+
+handle dq 0
+fsize dq 0
+buffor dq 0
+
 function ReadFileData(fileName){
-    handle = CreateFileA(fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0)
-    fsize = GetFileSize(handle, 0)
+    CreateFileA(fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0)
+    mov [handle], rax
+    GetFileSize([handle], 0)
+    mov [fsize], rax
     //printf('fsize %i',fsize)
-    buffor = malloc(fsize)
+    malloc([fsize])
+    mov [buffor], rax
     //;mov rbx, rax
-    ReadFile(handle, buffor, 11, 0, 0)
-    printf('%s',buffor)
-    CloseHandle(handle)
+    ReadFile([handle], [buffor], 11, 0, 0)
+    printf('%s',[buffor])
+    CloseHandle([handle])
     /*handle = fopen(fileName, 'rb')
     printf('handle %i',handle)
     fseek(handle, 0, 2)//SEEK_END
