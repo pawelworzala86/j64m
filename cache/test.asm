@@ -10,28 +10,13 @@ include 'include\\opengl.inc'
 
 section '.text' code readable executable
 
-prop1 = 23.99
-prop2 = "END"
-prop3 = 2.23
+
+
+
 macro main 
-            invoke printf, "OK %f %s",prop1*prop3,prop2
-    if 1<2
-
-        invoke printf, "OK"
-    
-else if
-
-        invoke printf, "OK"
-    
-end if
-    testA = 10
-    while testA>0
-
-        testA =         testA - 1
-        invoke printf, "OK"
-    
-end while
-        end macro
+                
+    invoke printf, "OK %f",prop1
+            end macro
 
     start:
     sub	rsp,8		; Make stack dqword aligned
@@ -43,7 +28,9 @@ end while
 section '.data' data readable writeable
     lf db 13,10,0
 
-    
+    prop1 = 23.99
+prop2 = "END"
+prop3 = 2.23
 
 
 section '.idata' import data readable writeable

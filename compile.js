@@ -215,7 +215,12 @@ function Parse(filePath,mainFile=false){
         }
     })
 
-    r(/var (.*)/gm,'$1')
+    r(/var (.*)/gm,match=>{
+        var name = match.split('=')[0].replace('var ','').trim()
+        var value = match.split('=')[1].trim()
+        DATA.push(name+' = '+value)
+        return ''
+    })
 
     for(let invoke of idata){
         r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
