@@ -63,7 +63,7 @@ var OBJECTS = {}
 var MACROS = []
 var DATA = []
 
-
+var MACRO = {}
 
 
 
@@ -209,9 +209,14 @@ function Parse(filePath,mainFile=false){
             ret
             endp`
         }else{
-            return `macro ${name} ${params}
-            ${body}
-            end macro`
+            //if(name!='main'){
+            //    MACRO[name] = {params,body}
+            //    return ''
+            //}else{
+                return `macro ${name} ${params}
+                ${body}
+                end macro`
+            //}
         }
     })
 
@@ -226,8 +231,48 @@ function Parse(filePath,mainFile=false){
         r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
     }
 
+
+
+
+    r(/macro([\s\S]+?)end macro/gm,match=>{
+        var res = match.split('\n')
+        var line1 = res[0]
+        var line1 = line1.split(' ')
+        var name = line1[1]
+        line1.splice(0,1)
+        line1.splice(0,1)
+        var params = line1
+        res.splice(0,1)
+        res.splice(res.length-1,1)
+        res = res.join('\n')
+        MACRO[name] = {params,body:res}
+        if(name=='main'){
+            return match
+        }else{
+            return ''
+        }
+    })
+    console.log('MACRO',MACRO)
+
+    //   nizej podmiana iteracja numerów funkcji lokalnych
     for(let macro of MACROS){
-        r(new RegExp('('+macro+')\\((.*)\\)','gm'),'$1 $2')
+        r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
+            var name = match.split('(')[0].trim()
+            var params = match.split('(')[1].split(')')[0].trim()
+            console.log('NM',name)
+            var res = MACRO[name].body//.split('\n')
+            //res.splice(0,1)
+            //res.splice(res.length-1,1)
+            //res = res.join('\n')
+            var paramsMacro = MACRO[name].params
+            var newParams = params.split(',')
+            var i = 0
+            for(const param of paramsMacro){
+                res = res.replace(new RegExp(param,'gm'),newParams[i])
+                i++
+            }
+            return res
+        })//'$1 $2')
     }
 
 

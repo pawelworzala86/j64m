@@ -15,8 +15,9 @@ section '.text' code readable executable
 
 
 
-macro ReadFileData fileName
-                invoke CreateFileA, fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+
+macro main 
+                                        invoke CreateFileA, "test.txt", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
@@ -29,12 +30,22 @@ macro ReadFileData fileName
     invoke CloseHandle, [handle]
 
     
+    
+                        invoke CreateFileA, "test.txt", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+    mov [handle], rax
+    invoke GetFileSize, [handle], 0
+    mov [fsize], rax
+    invoke printf, "fsize %i",[fsize]
+    invoke malloc, [fsize]
+    mov [buffor], rax
     
-            end macro
-macro main 
-                ReadFileData "test.txt"
-    ReadFileData "test.txt"
-            end macro
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0
+    invoke printf, "%s",[buffor]
+    invoke CloseHandle, [handle]
+
+    
+    
+                end macro
 
     start:
     sub	rsp,8		; Make stack dqword aligned
