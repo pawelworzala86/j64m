@@ -223,7 +223,7 @@ function Parse(filePath,mainFile=false){
     r(/var (.*)/gm,match=>{
         var name = match.split('=')[0].replace('var ','').trim()
         var value = match.split('=')[1].trim()
-        DATA.push(name+' = '+value)
+        DATA.push(name+' dq '+value)
         return ''
     })
 
@@ -256,25 +256,25 @@ function Parse(filePath,mainFile=false){
 
     //   nizej podmiana iteracja numerów funkcji lokalnych
     function switchMacro(){
-    for(let macro of MACROS){
-        r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
-            var name = match.split('(')[0].trim()
-            var params = match.split('(')[1].split(')')[0].trim()
-            console.log('NM',name)
-            var res = MACRO[name].body//.split('\n')
-            //res.splice(0,1)
-            //res.splice(res.length-1,1)
-            //res = res.join('\n')
-            var paramsMacro = MACRO[name].params
-            var newParams = params.split(',')
-            var i = 0
-            for(const param of paramsMacro){
-                res = res.replace(new RegExp(param,'gm'),newParams[i])
-                i++
-            }
-            return res
-        })//'$1 $2')
-    }
+        for(let macro of MACROS){
+            r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
+                var name = match.split('(')[0].trim()
+                var params = match.split('(')[1].split(')')[0].trim()
+                console.log('NM',name)
+                var res = MACRO[name].body//.split('\n')
+                //res.splice(0,1)
+                //res.splice(res.length-1,1)
+                //res = res.join('\n')
+                var paramsMacro = MACRO[name].params
+                var newParams = params.split(',')
+                var i = 0
+                for(const param of paramsMacro){
+                    res = res.replace(new RegExp(param,'gm'),newParams[i])
+                    i++
+                }
+                return res
+            })//'$1 $2')
+        }
     }
     var tmp = source+' '
     while(tmp!=source){
@@ -282,7 +282,10 @@ function Parse(filePath,mainFile=false){
         switchMacro()
     }
 
-
+    for(const dat of DATA){
+        var name = dat.trim().split(' ')[0].trim()
+        r(new RegExp(name,'gm'),'['+name+']')
+    }
 
     
 

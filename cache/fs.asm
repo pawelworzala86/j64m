@@ -21,7 +21,7 @@ macro main
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
-    invoke printf, "fsize %i",[fsize]
+    invoke printf, "[fsize] %i",[fsize]
     invoke malloc, [fsize]
     mov [buffor], rax
     
@@ -35,7 +35,7 @@ macro main
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
-    invoke printf, "fsize %i",[fsize]
+    invoke printf, "[fsize] %i",[fsize]
     invoke malloc, [fsize]
     mov [buffor], rax
     

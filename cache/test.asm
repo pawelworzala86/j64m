@@ -14,9 +14,9 @@ section '.text' code readable executable
 
 
 macro main 
-                
-    invoke printf, "OK %f",prop1
-            end macro
+                    
+    invoke printf, "OK %f",[prop1]
+                end macro
 
     start:
     sub	rsp,8		; Make stack dqword aligned
@@ -28,9 +28,9 @@ macro main
 section '.data' data readable writeable
     lf db 13,10,0
 
-    prop1 = 23.99
-prop2 = "END"
-prop3 = 2.23
+    prop1 dq 23.99
+prop2 dq "END"
+prop3 dq 2.23
 
 
 section '.idata' import data readable writeable
