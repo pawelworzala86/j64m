@@ -13,9 +13,33 @@ section '.text' code readable executable
 
 
 
+
+
+
+
 macro main 
                     
     invoke printf, "OK %f",[prop1]
+                        mov rax, 1
+mov rbx, 2
+cmp rax, rbx
+jl .if21
+jmp .endif21
+.if21:
+
+        invoke printf, "end"
+    
+.endif21:
+                        mov rax, 1
+mov rbx, 2
+cmp rax, rbx
+jl .if22
+jmp .endif22
+.if22:
+
+        invoke printf, "end"
+    
+.endif22:
                 end macro
 
     start:

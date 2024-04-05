@@ -66,6 +66,9 @@ var DATA = []
 var MACRO = {}
 
 
+var funcIDX = 1
+
+
 
 function Parse(filePath,mainFile=false){
     let source = fs.readFileSync(filePath).toString()
@@ -94,12 +97,117 @@ function Parse(filePath,mainFile=false){
 
 
 
-    r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}else(?<num2>\:[0-9]+)\{([\s\S]+?)(\k<num2>)\}/gm,
+    //function inner replacements
+    var whileIndex = 0
+    var _IFidx = 0
+    var blockIndex = 6675
+    source = source.replace(/function(.*)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
+
+        var LOCAL = ''
+
+        //FOR
+        match = match.replace(/\bfor([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
+            var head=match.split('(')[1].split(')')[0].trim().split(';')
+            var body=match.split('{')[1]
+            body=body.substring(0,body.length-6)
+            blockIndex++
+            return `${head[0]}
+            while(${head[1]}):${blockIndex}{
+                ${head[2]}
+                ${body}
+            :${blockIndex}}`
+        })
+
+        //while
+        match = match.replace(/while([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
+            var head=match.split('(')[1].split(')')[0].trim()
+            var body2=match.split('{')[1]
+            body2=body2.substring(0,body2.length-6)
+            //console.log('WHILE',head,body2)
+            whileIndex++
+            LOCAL+=`LOCAL while${whileIndex}\n`
+            blockIndex++
+            return `.while${whileIndex}:
+            ${body2}
+            if(${head}):${blockIndex}{
+                jmp .while${whileIndex}
+            :${blockIndex}}`
+        })
+
+        //if
+        var __IF=(oper,var1,var2)=>{
+            var regexpr=new RegExp('if\\(([\\w]+)['+oper+']+([\\w]+)\\)(?<num>\\:[0-9]+)\\{([\\s\\S]+?)(\\k<num>)\\}else(?<num2>\\:[0-9]+)\\{([\\s\\S]+?)(\\k<num2>)\\}','gm')
+            match=match.replace( regexpr, mmm=>{
+                var head = mmm.split('(')[1].split(')')[0]
+                var left = head.split(oper.replace(/\\/gm,''))[0]
+                var right = head.split(oper.replace(/\\/gm,''))[1]
+                var body1 = mmm.split('{')[1].split('}')[0]
+                body1=body1.substring(0,body1.length-5)
+                var body2 = mmm.split('{')[2].split('}')[0]
+                body2=body2.substring(0,body2.length-5)
+                _IFidx++
+                LOCAL+=`LOCAL if${_IFidx}\n`
+                LOCAL+=`LOCAL else${_IFidx}\n`
+                LOCAL+=`LOCAL endif${_IFidx}\n`
+                LOCAL+=`LOCAL else${_IFidx}\n`
+                return 'mov rax, '+left+'\nmov rbx, '+right+'\ncmp rax, rbx\n'+var1+' if'+_IFidx
+                +'\n'+var2+' .else'+_IFidx+'\njmp .endif'+_IFidx+'\n.if'
+                +_IFidx+':\n'+body1+'jmp .endif'+_IFidx+'\n.else'+_IFidx+':\n'+body2+'\n.endif'+_IFidx+':'
+            })
+            var regexpr=new RegExp('if\\(([\\w]+)'+oper+'([\\w]+)\\)(?<num>\\:[0-9]+)\\{([\\s\\S]+?)(\\k<num>)\\}','gm')
+            match=match.replace( regexpr, mmm=>{
+                _IFidx++
+                var head = mmm.split('(')[1].split(')')[0]
+                var left = head.split(oper.replace(/\\/gm,''))[0]
+                var right = head.split(oper.replace(/\\/gm,''))[1]
+                var body = mmm.split('{')[1].split('}')[0]
+                body=body.substring(0,body.length-5)
+                _IFidx++
+                LOCAL+=`LOCAL if${_IFidx}\n`
+                LOCAL+=`LOCAL endif${_IFidx}\n`
+                return 'mov rax, '+left+'\nmov rbx, '+right+'\ncmp rax, rbx\n'+var1
+                +' .if'+_IFidx+'\njmp .endif'+_IFidx+'\n.if'
+                +_IFidx+':\n'+body+'\n.endif'+_IFidx+':'
+            })
+        }
+        __IF('\\=\\=\\=','je','jne')
+        __IF('\\=\\=','je','jne')
+        __IF('\\<','jl','jnl')
+        __IF('\\!\\=','jne','je')
+        __IF('\\>','jg','jng')
+
+        //var
+        /*match=match.replace( /var (.*)/gm, mmm=>{
+            var name = mmm.split('=')[0].replace('var','').trim()
+            var value = mmm.split('=')[1].trim()
+            var type = 'QWORD'
+            if((value.indexOf('\'')>-1)||(value.indexOf('"')>-1)){
+                type = 'db'
+                value += ',0'
+            }
+            LOCAL+='LOCAL '+name+':'+type+'\n'
+            return 'mov '+name+', '+value
+        })*/
+
+
+        var first = match.split('{')[0]
+        var rest = match.split('{')
+        rest[0]=first
+        //rest[1]='\n'+LOCAL+'\n'+rest[1]
+
+        return rest.join('{')
+
+    })
+
+
+
+
+    /*r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}else(?<num2>\:[0-9]+)\{([\s\S]+?)(\k<num2>)\}/gm,
         'if $1\n$3\nelse if\n$6\nend if')
     r(/if\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
         'if $1\n$3\nend if')
     r(/while\((.*)\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,
-        'while $1\n$3\nend while')
+        'while $1\n$3\nend while')*/
 
     r(/(.*)\-\-/gm,'$1 = $1 - 1')
     r(/(.*)\+\+/gm,'$1 = $1 + 1')
@@ -272,6 +380,8 @@ function Parse(filePath,mainFile=false){
                     res = res.replace(new RegExp(param,'gm'),newParams[i])
                     i++
                 }
+                res = res.replace(/\.([a-zA-Z0-9]+)/gm,'.$1'+funcIDX)
+                funcIDX++
                 return res
             })//'$1 $2')
         }
