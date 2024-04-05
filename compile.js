@@ -255,6 +255,7 @@ function Parse(filePath,mainFile=false){
     console.log('MACRO',MACRO)
 
     //   nizej podmiana iteracja numerów funkcji lokalnych
+    function switchMacro(){
     for(let macro of MACROS){
         r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
             var name = match.split('(')[0].trim()
@@ -273,6 +274,12 @@ function Parse(filePath,mainFile=false){
             }
             return res
         })//'$1 $2')
+    }
+    }
+    var tmp = source+' '
+    while(tmp!=source){
+        tmp = source
+        switchMacro()
     }
 
 
