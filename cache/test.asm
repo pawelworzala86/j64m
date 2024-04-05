@@ -10,6 +10,8 @@ include 'include\\opengl.inc'
 
 section '.text' code readable executable
 
+include "math.asm"
+
 
 
 
@@ -40,8 +42,7 @@ jmp .endif22
         invoke printf, "end"
     
 .endif22:
-Macro_Math_pomnoz([prop3],[prop1],mth1)
-    [prop3] = mth1
+    
                 end macro
 
     start:
@@ -54,7 +55,8 @@ Macro_Math_pomnoz([prop3],[prop1],mth1)
 section '.data' data readable writeable
     lf db 13,10,0
 
-    prop1 dq 23.99
+    mth1 dq 0
+prop1 dq 23.99
 prop2 dq "END"
 prop3 dq 2.23
 

@@ -97,6 +97,36 @@ function Parse(filePath,mainFile=false){
 
 
 
+    source = source.replace(/import(.*)/gm,match=>{
+        //match=match.replace(/\"/gm,'')
+        if(match.indexOf('.inc')>-1){
+            match=match.replace('import','include')
+        }
+        if(match.indexOf('.lib')>-1){
+            match=match.replace('import','includelib')
+        }
+        if(match.indexOf('.js')>-1){
+            const name=match.replace('import ','')
+            //const data = fs.readFileSync('./source/'+name).toString()
+            //return parseSource(data)
+            var parts = name.split('/')
+            console.log('parts',parts)
+            if(parts.length>1){
+                try{
+                fs.mkdirSync('./cache/'+parts[0])
+                }catch(e){}
+            }
+            console.log('NNMAME',name)
+            Parse('./source/'+name.replace(/\"/gm,''))
+            match=match.replace('.js','.asm')
+        }
+        match=match.replace('import','include').replace(/\//gm,'\\')
+        return match
+    })
+
+
+
+
     //function inner replacements
     var whileIndex = 0
     var _IFidx = 0
