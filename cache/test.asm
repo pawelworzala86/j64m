@@ -40,6 +40,8 @@ jmp .endif22
         invoke printf, "end"
     
 .endif22:
+Macro_Math_pomnoz([prop3],[prop1],mth1)
+    [prop3] = mth1
                 end macro
 
     start:
