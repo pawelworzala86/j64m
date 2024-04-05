@@ -284,7 +284,7 @@ function Parse(filePath,mainFile=false){
 
     for(const dat of DATA){
         var name = dat.trim().split(' ')[0].trim()
-        r(new RegExp(name,'gm'),'['+name+']')
+        r(new RegExp('\\b'+name+'\\b','gm'),'['+name+']')
     }
 
     
