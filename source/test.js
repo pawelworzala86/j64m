@@ -26,5 +26,6 @@ function main(){
     printf('OK %f',prop1)
     testF()
     testF()
-    //prop3 = prop3 * prop1
+    prop3 = prop3 * prop1
+    printf('OK %f',prop3)
 }

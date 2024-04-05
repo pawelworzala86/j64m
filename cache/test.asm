@@ -25,16 +25,6 @@ macro main
                         mov rax, 1
 mov rbx, 2
 cmp rax, rbx
-jl .if21
-jmp .endif21
-.if21:
-
-        invoke printf, "end"
-    
-.endif21:
-                        mov rax, 1
-mov rbx, 2
-cmp rax, rbx
 jl .if22
 jmp .endif22
 .if22:
@@ -42,7 +32,22 @@ jmp .endif22
         invoke printf, "end"
     
 .endif22:
+                        mov rax, 1
+mov rbx, 2
+cmp rax, rbx
+jl .if23
+jmp .endif23
+.if23:
+
+        invoke printf, "end"
     
+.endif23:
+                    fld [prop3]
+    fmul [prop1]
+    fstp [mth1]
+mov rax,[mth1]
+mov     [prop3],rax
+    invoke printf, "OK %f",[prop3]
                 end macro
 
     start:

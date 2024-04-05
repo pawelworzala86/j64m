@@ -99,13 +99,13 @@ function Parse(filePath,mainFile=false){
 
     source = source.replace(/import(.*)/gm,match=>{
         //match=match.replace(/\"/gm,'')
-        if(match.indexOf('.inc')>-1){
+        /*if(match.indexOf('.inc')>-1){
             match=match.replace('import','include')
         }
         if(match.indexOf('.lib')>-1){
             match=match.replace('import','includelib')
         }
-        if(match.indexOf('.js')>-1){
+        if(match.indexOf('.js')>-1){*/
             const name=match.replace('import ','')
             //const data = fs.readFileSync('./source/'+name).toString()
             //return parseSource(data)
@@ -119,7 +119,7 @@ function Parse(filePath,mainFile=false){
             console.log('NNMAME',name)
             Parse('./source/'+name.replace(/\"/gm,''))
             match=match.replace('.js','.asm')
-        }
+        //}
         match=match.replace('import','include').replace(/\//gm,'\\')
         return match
     })
@@ -360,7 +360,7 @@ function Parse(filePath,mainFile=false){
         return ''
     })
 
-
+    
 
 
 
@@ -404,6 +404,8 @@ function Parse(filePath,mainFile=false){
         return ''
     })
 
+    r(/(.*) = (.*)/gm,'mov rax,$2\nmov $1,rax')
+
     for(let invoke of idata){
         r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
     }
@@ -416,8 +418,9 @@ function Parse(filePath,mainFile=false){
         var line1 = res[0]
         var line1 = line1.split(' ')
         var name = line1[1]
-        line1.splice(0,1)
-        line1.splice(0,1)
+        var line1 = line1[2].split(',')
+        //line1.splice(0,1)
+        //line1.splice(0,1)
         var params = line1
         res.splice(0,1)
         res.splice(res.length-1,1)
