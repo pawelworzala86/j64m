@@ -288,11 +288,12 @@ function Parse(filePath,mainFile=false){
     r(/^class([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
         var name = match.split(' ')[1].replace('{','').trim().split(':')[0]
 
-        const fields=[]
+        var fields=[]
         const funcs={}
         match=match.replace(/constructor\(\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,mmm=>{
             mmm=mmm.replace(/this\.(.*)/gm,m=>{
                 m=m.replace('this.','')
+                m=m.replace('=','dq')
                 fields.push(m)
                 return m
             })
@@ -322,7 +323,7 @@ function Parse(filePath,mainFile=false){
         }
 
         return `struct ${name}
-            ${fields.join('\n')}
+            ${(fields.join('\n'))}
         ends
         ${functions.join('\n')}`
     })
@@ -355,10 +356,10 @@ function Parse(filePath,mainFile=false){
     r(/(.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/return (.*)/gm,'mov rax, $1')
 
-    r(/^(.*) (dq|dd,db|rq) (.*)$/gm,match=>{
+    /*r(/^(.*) (dq|dd,db|rq) (.*)$/gm,match=>{
         DATA.push(match)
         return ''
-    })
+    })*/
 
     
 
@@ -452,7 +453,7 @@ function Parse(filePath,mainFile=false){
                     res = res.replace(new RegExp(param,'gm'),newParams[i])
                     i++
                 }
-                res = res.replace(/\.([a-zA-Z0-9]+)/gm,'.$1'+funcIDX)
+                res = res.replace(/\ \.([a-zA-Z0-9]+)/gm,'.$1'+funcIDX)
                 funcIDX++
                 return res
             })//'$1 $2')

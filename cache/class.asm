@@ -12,10 +12,8 @@ section '.text' code readable executable
 
 
 struct TestClass
-mov rax,24.44
-mov             valA,rax
-mov rax,"kuku"
-mov valB,rax
+            valA dq 24.44
+valB dq "kuku"
         ends
         
 
@@ -24,15 +22,17 @@ mov valB,rax
 
 obj TestClass
 
+
+
 macro main 
                     invoke printf, "OK"
-                    
-        invoke printf, "%f",obj.valA1
+                
+        invoke printf, "%f",obj.valA
         mov rax, 45
     
 mov rax,rax
-mov resA,rax
-    invoke printf, " %i",resA
+mov     [resA],rax
+    invoke printf, " %i",[resA]
                 end macro
 
     start:
@@ -45,7 +45,7 @@ mov resA,rax
 section '.data' data readable writeable
     lf db 13,10,0
 
-    
+    resA dq 0
 
 
 section '.idata' import data readable writeable

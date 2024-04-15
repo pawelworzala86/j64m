@@ -12,8 +12,10 @@ class TestClass{
 
 var obj = new TestClass()
 
+var resA = 0
+
 function main(){
     printf('OK')
-    var resA = obj.print()
+    resA = obj.print()
     printf(' %i',resA)
 }
