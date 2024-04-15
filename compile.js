@@ -411,7 +411,11 @@ function Parse(filePath,mainFile=false){
         r(new RegExp('('+invoke+')\\((.*)\\)','gm'),'invoke $1, $2')
     }
 
-
+    r(/([a-zA-Z0-9]+)\[([0-9]+)\]/gm,'[$1 + $2*8]')
+    r(/([0-9]+)\*([0-9]+)/gm,match=>{
+        return eval(match)
+    })
+    r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
 
 
     r(/macro([\s\S]+?)end macro/gm,match=>{
@@ -437,7 +441,7 @@ function Parse(filePath,mainFile=false){
 
     //   nizej podmiana iteracja numerów funkcji lokalnych
     function switchMacro(){
-        for(let macro of MACROS){
+        for(let macro of Object.keys(MACRO)){
             r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
                 var name = match.split('(')[0].trim()
                 var params = match.split('(')[1].split(')')[0].trim()
@@ -470,7 +474,7 @@ function Parse(filePath,mainFile=false){
         r(new RegExp('\\b'+name+'\\b','gm'),'['+name+']')
     }
 
-    
+    r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
 
 
     if(mainFile){
