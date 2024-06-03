@@ -417,6 +417,8 @@ function Parse(filePath,mainFile=false){
     })
     r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
 
+    
+
 
     r(/macro([\s\S]+?)end macro/gm,match=>{
         var res = match.split('\n')
@@ -457,7 +459,7 @@ function Parse(filePath,mainFile=false){
                     res = res.replace(new RegExp(param,'gm'),newParams[i])
                     i++
                 }
-                res = res.replace(/\ \.([a-zA-Z0-9]+)/gm,'.$1'+funcIDX)
+                res = res.replace(/(\ |\n)\.([a-zA-Z0-9]+)/gm,'$1.$2'+funcIDX)
                 funcIDX++
                 return res
             })//'$1 $2')
@@ -475,6 +477,7 @@ function Parse(filePath,mainFile=false){
     }
 
     r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
+    //r(/([a-zA-Z])\.([a-zA-Z0-9])/gm,'$1 .$2')
 
 
     if(mainFile){

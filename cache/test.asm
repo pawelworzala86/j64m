@@ -20,28 +20,27 @@ include "math.asm"
 
 
 macro main 
-                    
-    invoke printf, "OK %f",[prop1]
+                    invoke printf, "OK %f",[prop1]
                         mov rax, 1
 mov rbx, 2
 cmp rax, rbx
-jl.if22
-jmp.endif22
-.if2:
+jl .if22
+jmp .endif22
+.if22:
 
         invoke printf, "end"
     
-.endif2:
+.endif22:
                         mov rax, 1
 mov rbx, 2
 cmp rax, rbx
-jl.if23
-jmp.endif23
-.if2:
+jl .if23
+jmp .endif23
+.if23:
 
         invoke printf, "end"
     
-.endif2:
+.endif23:
                     fld [prop3]
     fmul [prop1]
     fstp [mth1]
