@@ -1,37 +1,36 @@
 //app:gl
 
-vertices dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
+vertices dq 1.0,0.9,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 vertices2 dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 coords dq 1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0
 
 var VAO = ?
+var bufferID = ?
+
+function CreateBuffer(posID,ssize,length,array){
+	lea rax, bufferID
+	invoke glGenBuffers, 1, rax
+
+	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+    invoke glBufferData, GL_ARRAY_BUFFER, length*8, array,GL_STATIC_DRAW
+
+    invoke glEnableVertexAttribArray, posID
+	invoke glVertexAttribPointer, posID,ssize,GL_DOUBLE,GL_FALSE, ssize*8, 0
+}
 
 function ProcInit(){
     printf('OK')
 	//invoke glCreateShader, GL_FRAGMENT_SHADER
 
+	lea rax, VAO
+    invoke glGenVertexArrays, 1, rax
+	printf('OK %i', [VAO])
+    invoke glBindVertexArray, [VAO]
 
-    //invoke glGenVertexArrays, 1, [VAO]
-	//printf('OK %i', [VAO])
-    //invoke glBindVertexArray, [VAO]
-
-    //this->CreateBuffer(0,3,18,vertices);
-    //this->CreateBuffer(1,2,12,coords);
+    CreateBuffer(0,3,18,vertices)
+    CreateBuffer(1,2,12,coords)
 
     invoke glBindVertexArray, 0
-
-/*
-void CMesh::CreateBuffer(int posID,int size,int length,void* array){
-
-    glGenBuffers(1,&this->bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, this->bufferID);
-    glBufferData(GL_ARRAY_BUFFER, length*8, array,GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(posID);
-    glVertexAttribPointer(posID,size,GL_DOUBLE,GL_FALSE, size*8, 0);
-
-};
-	*/
 }
 
 function ProcRender(){
@@ -48,7 +47,6 @@ function ProcRender(){
 	invoke	glVertex3d,float -0.6,float 0.6,float 0.0
 	invoke	glEnd
 
-	//glBindVertexArray(this->VAO);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	invoke glBindVertexArray, [VAO]
+	invoke glDrawArrays, GL_TRIANGLES, 0, 6
 }

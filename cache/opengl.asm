@@ -13,9 +13,12 @@ section '.text' code readable executable
 
 
 
-vertices dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
+vertices dq 1.0,0.9,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 vertices2 dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 coords dq 1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0
+
+
+
 
 
 
@@ -23,17 +26,29 @@ proc ProcInit
                 invoke printf, "OK"
 	
 
+	lea rax, [VAO]
+    invoke glGenVertexArrays, 1, rax
+	invoke printf, "OK %i", [VAO]
+    invoke glBindVertexArray, [VAO]
 
-    
-	
-    
+                    	lea rax, [bufferID]
+	invoke glGenBuffers, 1, rax
 
-    
-    
+	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+    invoke glBufferData, GL_ARRAY_BUFFER, 18*8, vertices,GL_STATIC_DRAW
+
+    invoke glEnableVertexAttribArray, 0
+	invoke glVertexAttribPointer, 0,3,GL_DOUBLE,GL_FALSE, 3*8, 0
+                    	lea rax, [bufferID]
+	invoke glGenBuffers, 1, rax
+
+	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+    invoke glBufferData, GL_ARRAY_BUFFER, 12*8, coords,GL_STATIC_DRAW
+
+    invoke glEnableVertexAttribArray, 1
+	invoke glVertexAttribPointer, 1,2,GL_DOUBLE,GL_FALSE, 2*8, 0
 
     invoke glBindVertexArray, 0
-
-
             ret
             endp
 
@@ -51,9 +66,8 @@ proc ProcRender
 	invoke	glVertex3d,float -0.6,float 0.6,float 0.0
 	invoke	glEnd
 
-	
-	
-
+	invoke glBindVertexArray, [VAO]
+	invoke glDrawArrays, GL_TRIANGLES, 0, 6
             ret
             endp
 
@@ -185,6 +199,7 @@ section '.data' data readable writeable
   lf db 13,10,0
 
 	VAO dq ?
+bufferID dq ?
 
 	include 'build\gl46.d.inc'
 
