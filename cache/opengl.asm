@@ -13,11 +13,27 @@ section '.text' code readable executable
 
 
 
+vertices dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
+vertices2 dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
+coords dq 1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0
+
 
 
 proc ProcInit 
                 invoke printf, "OK"
-	invoke glCreateShader, GL_FRAGMENT_SHADER
+	
+
+
+    
+	
+    
+
+    
+    
+
+    invoke glBindVertexArray, 0
+
+
             ret
             endp
 
@@ -34,6 +50,9 @@ proc ProcRender
 	invoke	glColor3f,float dword 1.0,float dword 0.1,float dword 1.0
 	invoke	glVertex3d,float -0.6,float 0.6,float 0.0
 	invoke	glEnd
+
+	
+	
 
             ret
             endp
@@ -165,7 +184,7 @@ section '.data' data readable writeable
 
   lf db 13,10,0
 
-	shader dq 0
+	VAO dq ?
 
 	include 'build\gl46.d.inc'
 
