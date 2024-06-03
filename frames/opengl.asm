@@ -7,6 +7,7 @@ format PE64 CONSOLE 5.0
 entry start
 
 include 'include\opengl.inc'
+include 'build\gl46.inc'
 
 section '.text' code readable executable
 
@@ -75,6 +76,7 @@ proc WindowProc uses rbx rsi rdi, hwnd,wmsg,wparam,lparam
 	invoke	wglMakeCurrent,[hdc],[hrc]
 	invoke	GetClientRect,[hwnd],addr rc
 	invoke	glViewport,0,0,[rc.right],[rc.bottom]
+	call InitGL
 	call ProcInit
 	invoke	GetTickCount
 	mov	[clock],eax
@@ -139,6 +141,8 @@ section '.data' data readable writeable
   lf db 13,10,0
 
 	{{DATA}}
+
+	include 'build\gl46.d.inc'
 
 section '.idata' import data readable writeable
     include 'include\idata.inc'

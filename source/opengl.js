@@ -1,8 +1,10 @@
 //app:gl
 
+var shader = 0
 
 function ProcInit(){
     printf('OK')
+	invoke glCreateShader, GL_FRAGMENT_SHADER
 }
 
 function ProcRender(){
