@@ -11,7 +11,7 @@ function CreateBuffer(posID,ssize,length,array){
 	lea rax, bufferID
 	invoke glGenBuffers, 1, rax
 
-	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+	invoke glBindBuffer, GL_ARRAY_BUFFER, bufferID
     invoke glBufferData, GL_ARRAY_BUFFER, length*8, array,GL_STATIC_DRAW
 
     invoke glEnableVertexAttribArray, posID
@@ -24,8 +24,8 @@ function ProcInit(){
 
 	lea rax, VAO
     invoke glGenVertexArrays, 1, rax
-	printf('OK %i', [VAO])
-    invoke glBindVertexArray, [VAO]
+	printf('OK %i', VAO)
+    invoke glBindVertexArray, VAO
 
     CreateBuffer(0,3,18,vertices)
     CreateBuffer(1,2,12,coords)
