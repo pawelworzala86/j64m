@@ -70,6 +70,9 @@ var MACRO = {}
 var funcIDX = 1
 
 
+var REGISTERS = ['rax','rbx','rcx','rdx']
+
+
 
 function Parse(filePath,mainFile=false){
     let source = fs.readFileSync(filePath).toString()
@@ -125,6 +128,18 @@ function Parse(filePath,mainFile=false){
         return match
     })
 
+    var lines = source.split('\n')
+    lines=lines.map(line=>{
+        var prefix=''
+        var index = 0
+        line=line.replace(/\&([a-zA-Z0-9\_]+)/gm,match=>{
+            prefix+='lea '+REGISTERS[index]+', '+match.replace('&','')+'\n'
+            index++
+            return REGISTERS[index-1]
+        })
+        return prefix+line
+    })
+    source = lines.join('\n')
 
 
 
@@ -485,6 +500,8 @@ function Parse(filePath,mainFile=false){
     r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
     //r(/([a-zA-Z])\.([a-zA-Z0-9])/gm,'$1 .$2')
     r(/(.*)\((.*)\)/gm,'invoke $1, $2')
+
+    
 
 
     if(mainFile){

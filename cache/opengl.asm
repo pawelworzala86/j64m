@@ -26,21 +26,24 @@ proc ProcInit
                 invoke printf, "OK"
 	
 
-	lea rax, [VAO]
+	
+lea rax, [VAO]
 invoke     glGenVertexArrays, 1, rax
 	invoke printf, "OK %i", [VAO]
     invoke glBindVertexArray, [VAO]
 
-                    	lea rax, [bufferID]
-	invoke glGenBuffers, 1, rax
+                    	
+lea rax, [bufferID]
+invoke 	glGenBuffers, 1, rax
 
 	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
     invoke glBufferData, GL_ARRAY_BUFFER, 18*8, vertices,GL_STATIC_DRAW
 
     invoke glEnableVertexAttribArray, 0
 	invoke glVertexAttribPointer, 0,3,GL_DOUBLE,GL_FALSE, 3*8, 0
-                    	lea rax, [bufferID]
-	invoke glGenBuffers, 1, rax
+                    	
+lea rax, [bufferID]
+invoke 	glGenBuffers, 1, rax
 
 	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
     invoke glBufferData, GL_ARRAY_BUFFER, 12*8, coords,GL_STATIC_DRAW

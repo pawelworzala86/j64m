@@ -8,8 +8,8 @@ var VAO = 0
 var bufferID = 0
 
 function CreateBuffer(posID,ssize,length,array){
-	lea rax, bufferID
-	invoke glGenBuffers, 1, rax
+	//lea rax, bufferID
+	glGenBuffers(1, &bufferID)
 
 	invoke glBindBuffer, GL_ARRAY_BUFFER, bufferID
     invoke glBufferData, GL_ARRAY_BUFFER, length*8, array,GL_STATIC_DRAW
@@ -22,8 +22,8 @@ function ProcInit(){
     printf('OK')
 	//invoke glCreateShader, GL_FRAGMENT_SHADER
 
-	lea rax, VAO
-    glGenVertexArrays(1, rax)
+	//lea rax, VAO
+    glGenVertexArrays(1, &VAO)
 	printf('OK %i', VAO)
     invoke glBindVertexArray, VAO
 
