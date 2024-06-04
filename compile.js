@@ -62,6 +62,7 @@ var FRM = 'cmd'
 var OBJECTS = {}
 var MACROS = []
 var DATA = []
+var DATA2 = []
 
 var MACRO = {}
 
@@ -400,8 +401,13 @@ function Parse(filePath,mainFile=false){
 
     r(/var (.*)/gm,match=>{
         var name = match.split('=')[0].replace('var ','').trim()
-        var value = match.split('=')[1].trim()
-        DATA.push(name+' dq '+value)
+        if(match.split('=')[1].trim().indexOf('[')==-1){
+            var value = match.split('=')[1].trim().replace('[','').replace(']','')
+            DATA.push(name+' dq '+value)
+        }else{
+            var value = match.split('=')[1].trim().replace('[','').replace(']','')
+            DATA2.push(name+' dq '+value)
+        }
         return ''
     })
 
@@ -483,7 +489,7 @@ function Parse(filePath,mainFile=false){
     if(mainFile){
         let frame = fs.readFileSync('./frames/'+FRM+'.asm').toString()
         source = frame.replace(/{{SOURCE}}/gm,source)
-        source = source.replace(/{{DATA}}/gm,DATA.join('\n'))
+        source = source.replace(/{{DATA}}/gm,DATA.join('\n')+'\n'+DATA2.join('\n'))
     }
 
 
