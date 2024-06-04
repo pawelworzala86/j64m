@@ -484,6 +484,7 @@ function Parse(filePath,mainFile=false){
 
     r(/\[\[([a-zA-Z0-9]+)\]/gm,'[$1')
     //r(/([a-zA-Z])\.([a-zA-Z0-9])/gm,'$1 .$2')
+    r(/(.*)\((.*)\)/gm,'invoke $1, $2')
 
 
     if(mainFile){

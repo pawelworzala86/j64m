@@ -23,7 +23,7 @@ function ProcInit(){
 	//invoke glCreateShader, GL_FRAGMENT_SHADER
 
 	lea rax, VAO
-    invoke glGenVertexArrays, 1, rax
+    glGenVertexArrays(1, rax)
 	printf('OK %i', VAO)
     invoke glBindVertexArray, VAO
 

@@ -27,7 +27,7 @@ proc ProcInit
 	
 
 	lea rax, [VAO]
-    invoke glGenVertexArrays, 1, rax
+invoke     glGenVertexArrays, 1, rax
 	invoke printf, "OK %i", [VAO]
     invoke glBindVertexArray, [VAO]
 
