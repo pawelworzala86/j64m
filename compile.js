@@ -501,6 +501,16 @@ function Parse(filePath,mainFile=false){
     //r(/([a-zA-Z])\.([a-zA-Z0-9])/gm,'$1 .$2')
     r(/(.*)\((.*)\)/gm,'invoke $1, $2')
 
+    var GLFuncs = []
+    r(/(gl[a-zA-Z0-9\_]+)/gm,match=>{
+        GLFuncs.push(match)
+        return match
+    })
+    console.log('GLF',GLFuncs)
+
+    var gl64 = require('./build/make.js')
+    gl64(GLFuncs)
+
     
 
 
