@@ -9,14 +9,14 @@ module.exports = function(GLFuncs){
     var libd = ''
 
     data.replace(/export type (.*) = (.*);/gm,match=>{
-        console.log(match)
+        //console.log(match)
     })
 
     data.replace(/export const (.*) = (.*);/gm,match=>{
         var params = match.split('=')
         var name = params[0].replace('export const ','').trim()
         var value = params[1].trim().replace('0x','$')
-        console.log(match)
+        //console.log(match)
         lib+='GL_'+name+' = '+value+'\n'
     })
 
@@ -24,7 +24,7 @@ module.exports = function(GLFuncs){
         var params = match.split('=')
         var name = params[0].replace('export function ','').trim()
         if((idata.indexOf('gl'+name)==-1)&&(GLFuncs.includes('gl'+name))){
-            console.log(match)
+            //console.log(match)
             libd+='gl'+name+' dq ?\n'
         }
     })
@@ -34,14 +34,14 @@ module.exports = function(GLFuncs){
     data.replace(/export function ([a-zA-Z0-9]+)/gm,match=>{
         var params = match.split('=')
         var name = params[0].replace('export function ','').trim()
-        console.log(match)
+        //console.log(match)
         if((idata.indexOf('gl'+name)==-1)&&(GLFuncs.includes('gl'+name))){
             lib+='invoke wglGetProcAddress, "gl'+name+'"\nmov [gl'+name+'],rax\n'
         }
     })
     lib+='\n\nret\nendp\n\n'
 
-    console.log(lib)
+    //console.log(lib)
 
     fs.writeFileSync('./build/gl46.inc', lib)
     fs.writeFileSync('./build/gl46.d.inc', libd)
