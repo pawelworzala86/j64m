@@ -42,6 +42,8 @@ function ProcInit(){
     glShaderSource(vertexShader,1, &buffor, &fsize);
     glCompileShader(vertexShader);
 
+	CloseHandle(handle)
+
 	handle = CreateFileA('default.frag', GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0);
     fsize = GetFileSize(handle, 0);
     buffor = malloc(fsize);
@@ -50,6 +52,8 @@ function ProcInit(){
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader,1, &buffor, &fsize);
     glCompileShader(fragmentShader);
+
+	CloseHandle(handle)
 
 	programID = glCreateProgram();
     glAttachShader(programID, vertexShader);

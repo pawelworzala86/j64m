@@ -56,6 +56,8 @@ lea rbx, [fsize]
 invoke     glShaderSource, [vertexShader],1, rax, rbx;
 invoke     glCompileShader, [vertexShader];
 
+	invoke CloseHandle, [handle]
+
 invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0;
 mov rax,rax
 mov 	[handle],rax
@@ -74,6 +76,8 @@ lea rax, [buffor]
 lea rbx, [fsize]
 invoke     glShaderSource, [fragmentShader],1, rax, rbx;
 invoke     glCompileShader, [fragmentShader];
+
+	invoke CloseHandle, [handle]
 
 invoke glCreateProgram, ;
 mov rax,rax
