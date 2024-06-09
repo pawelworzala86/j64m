@@ -511,6 +511,8 @@ function Parse(filePath,mainFile=false){
     var gl64 = require('./build/make.js')
     gl64(GLFuncs)
 
+    r(/\[(.*)\] dq/gm,'$1 dq')
+
     
 
 

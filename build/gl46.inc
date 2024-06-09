@@ -1381,38 +1381,6 @@ GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW = $82ed;
 
 
 proc InitGL
-invoke wglGetProcAddress, "glBindBuffer"
-mov [glBindBuffer],rax
-invoke wglGetProcAddress, "glGenBuffers"
-mov [glGenBuffers],rax
-invoke wglGetProcAddress, "glBufferData"
-mov [glBufferData],rax
-invoke wglGetProcAddress, "glAttachShader"
-mov [glAttachShader],rax
-invoke wglGetProcAddress, "glCompileShader"
-mov [glCompileShader],rax
-invoke wglGetProcAddress, "glCreateProgram"
-mov [glCreateProgram],rax
-invoke wglGetProcAddress, "glCreateShader"
-mov [glCreateShader],rax
-invoke wglGetProcAddress, "glDeleteShader"
-mov [glDeleteShader],rax
-invoke wglGetProcAddress, "glDetachShader"
-mov [glDetachShader],rax
-invoke wglGetProcAddress, "glEnableVertexAttribArray"
-mov [glEnableVertexAttribArray],rax
-invoke wglGetProcAddress, "glLinkProgram"
-mov [glLinkProgram],rax
-invoke wglGetProcAddress, "glShaderSource"
-mov [glShaderSource],rax
-invoke wglGetProcAddress, "glUseProgram"
-mov [glUseProgram],rax
-invoke wglGetProcAddress, "glVertexAttribPointer"
-mov [glVertexAttribPointer],rax
-invoke wglGetProcAddress, "glBindVertexArray"
-mov [glBindVertexArray],rax
-invoke wglGetProcAddress, "glGenVertexArrays"
-mov [glGenVertexArrays],rax
 
 
 ret
