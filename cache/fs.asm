@@ -17,34 +17,26 @@ section '.text' code readable executable
 
 
 macro main 
-                                        invoke CreateFileA, "test.txt", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+                                        invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
-    invoke printf, "[fsize] %i",[fsize]
+    
     invoke malloc, [fsize]
     mov [buffor], rax
-    
     invoke ReadFile, [handle], [buffor], [fsize], 0, 0
     invoke printf, "%s",[buffor]
-    invoke CloseHandle, [handle]
-
-    
-    
-                        invoke CreateFileA, "test.txt", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+    invoke CloseHandle, [handle]
+                        invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
     mov [handle], rax
     invoke GetFileSize, [handle], 0
     mov [fsize], rax
-    invoke printf, "[fsize] %i",[fsize]
+    
     invoke malloc, [fsize]
     mov [buffor], rax
-    
     invoke ReadFile, [handle], [buffor], [fsize], 0, 0
     invoke printf, "%s",[buffor]
-    invoke CloseHandle, [handle]
-
-    
-    
+    invoke CloseHandle, [handle]
                 end macro
 
     start:
@@ -60,6 +52,7 @@ section '.data' data readable writeable
     handle dq 0
 fsize dq 0
 buffor dq 0
+
 
 
 section '.idata' import data readable writeable

@@ -1,7 +1,16 @@
 glBindBuffer dq ?
 glGenBuffers dq ?
 glBufferData dq ?
+glAttachShader dq ?
+glCompileShader dq ?
+glCreateProgram dq ?
+glCreateShader dq ?
+glDeleteShader dq ?
+glDetachShader dq ?
 glEnableVertexAttribArray dq ?
+glLinkProgram dq ?
+glShaderSource dq ?
+glUseProgram dq ?
 glVertexAttribPointer dq ?
 glBindVertexArray dq ?
 glGenVertexArrays dq ?

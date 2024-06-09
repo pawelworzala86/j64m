@@ -22,54 +22,112 @@ section '.text' code readable executable
 
 
 
+
+
+
+
+
+
+
+
+
 proc ProcInit 
                 invoke printf, "OK"
+
+
+invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0;
+mov rax,rax
+mov 	[handle],rax
+invoke GetFileSize, [handle], 0;
+mov rax,rax
+mov     [fsize],rax
+invoke malloc, [fsize];
+mov rax,rax
+mov     [buffor],rax
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0;
+
+	
+
+invoke glCreateShader, GL_VERTEX_SHADER;
+mov rax,rax
+mov 	[vertexShader],rax
+lea rax, [buffor]
+lea rbx, [fsize]
+invoke     glShaderSource, [vertexShader],1, rax, rbx;
+invoke     glCompileShader, [vertexShader];
+
+invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0;
+mov rax,rax
+mov 	[handle],rax
+invoke GetFileSize, [handle], 0;
+mov rax,rax
+mov     [fsize],rax
+invoke malloc, [fsize];
+mov rax,rax
+mov     [buffor],rax
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0;
+
+invoke glCreateShader, GL_FRAGMENT_SHADER;
+mov rax,rax
+mov 	[fragmentShader],rax
+lea rax, [buffor]
+lea rbx, [fsize]
+invoke     glShaderSource, [fragmentShader],1, rax, rbx;
+invoke     glCompileShader, [fragmentShader];
+
+invoke glCreateProgram, ;
+mov rax,rax
+mov 	[programID],rax
+invoke     glAttachShader, [programID], [vertexShader];
+invoke     glAttachShader, [programID], [fragmentShader];
+invoke     glLinkProgram, [programID];
+
+invoke 	glUseProgram, [programID];
+    
+
+invoke     glDetachShader, [programID], [vertexShader];
+invoke 	glDetachShader, [programID], [fragmentShader];
+
+invoke     glDeleteShader, [vertexShader];
+invoke     glDeleteShader, [fragmentShader];
+
+
 	
 
 	
 lea rax, [VAO]
 invoke     glGenVertexArrays, 1, rax
 	invoke printf, "OK %i", [VAO]
-    invoke glBindVertexArray, [VAO]
+invoke     glBindVertexArray, [VAO]
 
                     	
 lea rax, [bufferID]
 invoke 	glGenBuffers, 1, rax
 
-	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
-    invoke glBufferData, GL_ARRAY_BUFFER, 18*8, vertices,GL_STATIC_DRAW
+invoke 	glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+invoke     glBufferData, GL_ARRAY_BUFFER, 18*8, vertices,GL_STATIC_DRAW
 
-    invoke glEnableVertexAttribArray, 0
-	invoke glVertexAttribPointer, 0,3,GL_DOUBLE,GL_FALSE, 3*8, 0
+invoke     glEnableVertexAttribArray, 0
+invoke 	glVertexAttribPointer, 0,3,GL_DOUBLE,GL_FALSE, 3*8, 0
                     	
 lea rax, [bufferID]
 invoke 	glGenBuffers, 1, rax
 
-	invoke glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
-    invoke glBufferData, GL_ARRAY_BUFFER, 12*8, coords,GL_STATIC_DRAW
+invoke 	glBindBuffer, GL_ARRAY_BUFFER, [bufferID]
+invoke     glBufferData, GL_ARRAY_BUFFER, 12*8, coords,GL_STATIC_DRAW
 
-    invoke glEnableVertexAttribArray, 1
-	invoke glVertexAttribPointer, 1,2,GL_DOUBLE,GL_FALSE, 2*8, 0
+invoke     glEnableVertexAttribArray, 1
+invoke 	glVertexAttribPointer, 1,2,GL_DOUBLE,GL_FALSE, 2*8, 0
 
-    invoke glBindVertexArray, 0
+invoke     glBindVertexArray, 0
             ret
             endp
 
 proc ProcRender 
                 
-    invoke	glClear,GL_COLOR_BUFFER_BIT
-	invoke	glBegin,GL_QUADS
-	invoke	glColor3f,float dword 1.0,float dword 0.1,float dword 0.1
-	invoke	glVertex3d,float -0.6,float -0.6,float 0.0
-	invoke	glColor3f,float dword 0.1,float dword 0.1,float dword 0.1
-	invoke	glVertex3d,float 0.6,float -0.6,float 0.0
-	invoke	glColor3f,float dword 0.1,float dword 0.1,float dword 1.0
-	invoke	glVertex3d,float 0.6,float 0.6,float 0.0
-	invoke	glColor3f,float dword 1.0,float dword 0.1,float dword 1.0
-	invoke	glVertex3d,float -0.6,float 0.6,float 0.0
-	invoke	glEnd
+    
 
-	invoke glBindVertexArray, [VAO]
+invoke 	glBindVertexArray, [VAO]
 	invoke glDrawArrays, GL_TRIANGLES, 0, 6
             ret
             endp
@@ -203,6 +261,12 @@ section '.data' data readable writeable
 
 	VAO dq 0
 bufferID dq 0
+handle dq 0
+fsize dq 0
+buffor dq 0
+vertexShader dq 0
+fragmentShader dq 0
+programID dq 0
 vertices dq 1.0,0.9,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 vertices2 dq 1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0
 coords dq 1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0
