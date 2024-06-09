@@ -512,7 +512,7 @@ function Parse(filePath,mainFile=false){
     gl64(GLFuncs)
 
     r(/\[(.*)\] dq/gm,'$1 dq')
-
+    r(/([a-zA-Z0-9\_]+)\.\[(.*)\]/gm,'[$1.$2]')
     
 
 
