@@ -5,7 +5,7 @@ class TestClass{
         this.valB = 'kuku'
     }
     print(){
-        //this.valB = new TestClass
+        //this.valB = new TTClass()
         printf('%f',this.valA)
         return 45
     }
