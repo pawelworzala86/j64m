@@ -20,12 +20,22 @@ valB dq "kuku"
 
 
 
-obj TestClass
+
 
 
 
 macro main 
-                    invoke printf, "OK"
+                
+    invoke malloc, 16
+mov [obj],rax
+mov rax,24.44
+mov qword[obj+0],rax
+mov rax,"kuku"
+mov qword[obj+8],rax
+
+
+
+    invoke printf, "OK"
                 
         invoke printf, "%f",qword[obj+0]
         mov rax, 45
@@ -46,7 +56,8 @@ mov     [resA],rax
 section '.data' data readable writeable
     lf db 13,10,0
 
-    resA dq 0
+    obj dq ?
+resA dq 0
 
 
 

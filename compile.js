@@ -313,7 +313,8 @@ function Parse(filePath,mainFile=false){
                 m=m.replace('=','dq')
                 fields.push(m)
                 var name=m.trim().split(' ')[0]
-                paramsS.push(name)
+                var value=m.trim().split(' ')[2]
+                paramsS.push({name,value})
                 return m
             })
             return mmm
@@ -338,7 +339,7 @@ function Parse(filePath,mainFile=false){
             data = data.replace(/this\.([a-zA-Z0-9\_]+)\(/gm,name+'_$1(self,')
             var paramIdx = 0
             for(const param of paramsS){
-                data = data.replace(new RegExp('this\\.'+param,'gm'),'qword[self+'+paramIdx+']')
+                data = data.replace(new RegExp('this\\.'+param.name,'gm'),'qword[self+'+paramIdx+']')
                 paramIdx+=8
             }
             ClassINDEX++
@@ -355,12 +356,20 @@ function Parse(filePath,mainFile=false){
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
         OBJ.classes.push(params[1])
-        OBJ.params.push(params[1])
-        return `${params[1]} ${params[4].replace('()','')}`
+        //OBJ.params.push(params[1])
+        //return `${params[1]} ${params[4].replace('()','')}`
+        var defs = ''
+        var paramIdx = 0
+        for(const param of OBJ.params){
+            defs += 'mov rax,'+param.value+'\nmov qword['+params[1]+'+'+paramIdx+'],rax\n'
+            paramIdx+=8
+        }
+        DATA.push(`${params[1]} dq ?`)
+        return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
     })
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
-        for(const param of OBJ.params){
+        for(const param of OBJ.classes){
             source = source.replace(new RegExp(param+'\\.[a-zA-Z0-9\_]+\\(','gm'),match=>{
                 var obj = match.split('.')[0]
                 var func = match.split('.')[1].split('(')[0]
@@ -375,7 +384,7 @@ function Parse(filePath,mainFile=false){
         for(const klass of OBJ.classes){
             var paramIdx = 0
             for(const param of OBJ.params){
-                source = source.replace(new RegExp(klass+'\\.'+param,'gm'),'qword['+klass+'+'+paramIdx+']')
+                source = source.replace(new RegExp(klass+'\\.'+param.name,'gm'),'qword['+klass+'+'+paramIdx+']')
                 paramIdx+=8
             }
         }

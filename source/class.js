@@ -10,11 +10,14 @@ class TestClass{
     }
 }
 
-var obj = new TestClass()
+
 
 var resA = 0
 
 function main(){
+
+    var obj = new TestClass()
+
     printf('OK')
     resA = obj.print()
     printf(' %i',resA)
