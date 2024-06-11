@@ -24,7 +24,12 @@ valB dq "kuku"
 
 
 
-macro main 
+
+
+    start:
+    sub	rsp,8		; Make stack dqword aligned
+
+     
                 
     invoke malloc, 16
 mov [obj],rax
@@ -44,12 +49,7 @@ mov rax,rax
 mov     [resA],rax
     invoke printf, " %i",[resA]
     invoke printf, " %f",qword[obj+0]
-                end macro
-
-    start:
-    sub	rsp,8		; Make stack dqword aligned
-
-    main
+                
 
     invoke	ExitProcess,0
 

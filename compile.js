@@ -539,12 +539,20 @@ function Parse(filePath,mainFile=false){
 
     r(/\[(.*)\] dq/gm,'$1 dq')
     r(/([a-zA-Z0-9\_]+)\.\[(.*)\]/gm,'[$1.$2]')
+
+    var main = ''
+    r(/macro main([\s\S]+?)end macro/gm,match=>{
+        main=match.replace('macro main','').replace('end macro','')
+        return ''
+    })
+    
     
 
 
     if(mainFile){
         let frame = fs.readFileSync('./frames/'+FRM+'.asm').toString()
         source = frame.replace(/{{SOURCE}}/gm,source)
+        source = source.replace(/main/gm,main)
         source = source.replace(/{{DATA}}/gm,DATA.join('\n')+'\n'+DATA2.join('\n'))
     }
 
