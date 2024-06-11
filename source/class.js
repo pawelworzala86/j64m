@@ -18,4 +18,5 @@ function main(){
     printf('OK')
     resA = obj.print()
     printf(' %i',resA)
+    printf(' %f',obj.valA)
 }

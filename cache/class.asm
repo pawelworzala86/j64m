@@ -27,12 +27,13 @@ obj TestClass
 macro main 
                     invoke printf, "OK"
                 
-        invoke printf, "%f",obj.valA
+        invoke printf, "%f",qword[obj+0]
         mov rax, 45
     
 mov rax,rax
 mov     [resA],rax
     invoke printf, " %i",[resA]
+    invoke printf, " %f",qword[obj+0]
                 end macro
 
     start:
@@ -46,6 +47,7 @@ section '.data' data readable writeable
     lf db 13,10,0
 
     resA dq 0
+
 
 
 section '.idata' import data readable writeable

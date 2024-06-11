@@ -306,11 +306,14 @@ function Parse(filePath,mainFile=false){
 
         var fields=[]
         const funcs={}
+        var paramsS = []
         match=match.replace(/constructor\(\)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,mmm=>{
             mmm=mmm.replace(/this\.(.*)/gm,m=>{
                 m=m.replace('this.','')
                 m=m.replace('=','dq')
                 fields.push(m)
+                var name=m.trim().split(' ')[0]
+                paramsS.push(name)
                 return m
             })
             return mmm
@@ -324,7 +327,7 @@ function Parse(filePath,mainFile=false){
             return ''
         })
 
-        OBJECTS[name]={name,fields:fields,funcs,params:[]}
+        OBJECTS[name]={name,fields:fields,funcs,params:paramsS,classes:[]}
 
         var functions = []
         for(const func of Object.keys(funcs)){
@@ -333,7 +336,11 @@ function Parse(filePath,mainFile=false){
             var params = FUNC.params
             params=params.length?(','+params):''
             data = data.replace(/this\.([a-zA-Z0-9\_]+)\(/gm,name+'_$1(self,')
-
+            var paramIdx = 0
+            for(const param of paramsS){
+                data = data.replace(new RegExp('this\\.'+param,'gm'),'qword[self+'+paramIdx+']')
+                paramIdx+=8
+            }
             ClassINDEX++
             functions.push('function '+name+'_'+func+'(this'+params+'):'+ClassINDEX+'{\n'+data+'\n:'+ClassINDEX+'}\n')
         }
@@ -347,6 +354,7 @@ function Parse(filePath,mainFile=false){
     source = source.replace(/var [a-zA-Z0-9]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
+        OBJ.classes.push(params[1])
         OBJ.params.push(params[1])
         return `${params[1]} ${params[4].replace('()','')}`
     })
@@ -361,8 +369,17 @@ function Parse(filePath,mainFile=false){
         }
     }
     r(/this/gm,'self')
-
-
+    console.log('OBJECTS',OBJECTS)
+    for(const key of Object.keys(OBJECTS)){
+        var OBJ = OBJECTS[key]
+        for(const klass of OBJ.classes){
+            var paramIdx = 0
+            for(const param of OBJ.params){
+                source = source.replace(new RegExp(klass+'\\.'+param,'gm'),'qword['+klass+'+'+paramIdx+']')
+                paramIdx+=8
+            }
+        }
+    }
 
 
     r(/\,\)/gm,')')
