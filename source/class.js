@@ -5,6 +5,18 @@ class TestClass{
         this.valB = 'kuku'
     }
     print(){
+        //this.valB = new TestClass
+        printf('%f',this.valA)
+        return 45
+    }
+}
+
+class TTClass{
+    constructor(){
+        this.valA = 4.33
+        this.valB = 'kuku'
+    }
+    print(){
         printf('%f',this.valA)
         return 45
     }

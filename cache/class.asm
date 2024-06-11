@@ -20,6 +20,15 @@ valB dq "kuku"
 
 
 
+struct TTClass
+            valA dq 4.33
+valB dq "kuku"
+        ends
+        
+
+
+
+
 
 
 
@@ -42,6 +51,7 @@ mov qword[obj+8],rax
 
     invoke printf, "OK"
                 
+        
         invoke printf, "%f",qword[obj+0]
         mov rax, 45
     

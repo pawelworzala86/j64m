@@ -352,7 +352,22 @@ function Parse(filePath,mainFile=false){
         ${functions.join('\n')}`
     })
     console.log('OBJECTS',OBJECTS)
-    source = source.replace(/var [a-zA-Z0-9]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
+    /*source = source.replace(/this\.[a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+/gm,match=>{
+        var params = match.split(' ')
+        var OBJ=OBJECTS[params[4].replace('()','')]
+        OBJ.classes.push(params[1])
+        //OBJ.params.push(params[1])
+        //return `${params[1]} ${params[4].replace('()','')}`
+        var defs = ''
+        var paramIdx = 0
+        for(const param of OBJ.params){
+            defs += 'mov rax,'+param.value+'\nmov qword['+params[1]+'+'+paramIdx+'],rax\n'
+            paramIdx+=8
+        }
+        DATA.push(`${params[1]} dq ?`)
+        return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
+    })*/
+    source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
         OBJ.classes.push(params[1])
@@ -442,6 +457,9 @@ function Parse(filePath,mainFile=false){
 
     r(/var (.*)/gm,match=>{
         var name = match.split('=')[0].replace('var ','').trim()
+        if(!match.split('=')[1]){
+            return match
+        }
         if(match.split('=')[1].trim().indexOf('[')==-1){
             var value = match.split('=')[1].trim().replace('[','').replace(']','')
             DATA.push(name+' dq '+value)
@@ -545,7 +563,6 @@ function Parse(filePath,mainFile=false){
         main=match.replace('macro main','').replace('end macro','')
         return ''
     })
-    
     
 
 
