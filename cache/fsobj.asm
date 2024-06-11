@@ -25,46 +25,64 @@ buffor dq 0
 
 
 
-fs FS
+invoke malloc, 24
+mov [fs],rax
+mov rax,0
+mov qword[fs+0],rax
+mov rax,0
+mov qword[fs+8],rax
+mov rax,0
+mov qword[fs+16],rax
 
-macro main 
-                                    
-        invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
-        mov [handle], rax
-        invoke GetFileSize, [handle], 0
-        mov [fsize], rax
-        
-        invoke malloc, [fsize]
-        mov [buffor], rax
-        invoke ReadFile, [handle], [buffor], [fsize], 0, 0
-        invoke printf, "%s",[buffor]
-        invoke CloseHandle, [handle]
-    
-                    
-        invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
-        mov [handle], rax
-        invoke GetFileSize, [handle], 0
-        mov [fsize], rax
-        
-        invoke malloc, [fsize]
-        mov [buffor], rax
-        invoke ReadFile, [handle], [buffor], [fsize], 0, 0
-        invoke printf, "%s",[buffor]
-        invoke CloseHandle, [handle]
-    
-                end macro
+
+
+
 
     start:
     sub	rsp,8		; Make stack dqword aligned
 
-    main
+     
+                                    
+invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+mov rax,rax
+mov         qword[fs+0],rax
+        
+invoke GetFileSize, qword[fs+0], 0
+mov rax,rax
+mov         qword[fs+8],rax
+        
+        
+        invoke malloc, qword[fs+8]
+        mov [buffor], rax
+        invoke ReadFile, qword[fs+0], [buffor], qword[fs+8], 0, 0
+        invoke printf, "%s",[buffor]
+        invoke CloseHandle, qword[fs+0]
+    
+                    
+invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+mov rax,rax
+mov         qword[fs+0],rax
+        
+invoke GetFileSize, qword[fs+0], 0
+mov rax,rax
+mov         qword[fs+8],rax
+        
+        
+        invoke malloc, qword[fs+8]
+        mov [buffor], rax
+        invoke ReadFile, qword[fs+0], [buffor], qword[fs+8], 0, 0
+        invoke printf, "%s",[buffor]
+        invoke CloseHandle, qword[fs+0]
+    
+                
 
     invoke	ExitProcess,0
 
 section '.data' data readable writeable
     lf db 13,10,0
 
-    handle dq 0
+    fs dq ?
+handle dq 0
 fsize dq 0
 buffor dq 0
 

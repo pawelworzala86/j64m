@@ -10,16 +10,16 @@ class FS{
         this.buffor = 0
     }
     ReadFileData(fileName){
-        CreateFileA(fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0)
-        mov handle, rax
-        GetFileSize(handle, 0)
-        mov fsize, rax
+        this.handle = CreateFileA(fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0)
+        //mov this.handle, rax
+        this.fsize = GetFileSize(this.handle, 0)
+        //mov this.fsize, rax
         //printf('fsize %i',fsize)
-        malloc(fsize)
+        malloc(this.fsize)
         mov buffor, rax
-        ReadFile(handle, buffor, fsize, 0, 0)
+        ReadFile(this.handle, buffor, this.fsize, 0, 0)
         printf('%s',buffor)
-        CloseHandle(handle)
+        CloseHandle(this.handle)
     }
 }
 
