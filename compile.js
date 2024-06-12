@@ -388,7 +388,8 @@ function Parse(filePath,mainFile=false){
     
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
-        for(const param of OBJ.classes){
+        for(var param of OBJ.classes){
+            param=param.replace('[','\\[').replace(']','\\]').replace('+','\\+')
             source = source.replace(new RegExp(param+'\\.[a-zA-Z0-9\_]+\\(','gm'),match=>{
                 var obj = match.split('.')[0]
                 var func = match.split('.')[1].split('(')[0]
@@ -422,7 +423,6 @@ function Parse(filePath,mainFile=false){
         DATA.push(match)
         return ''
     })*/
-
     
 
 

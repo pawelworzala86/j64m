@@ -62,7 +62,6 @@ mov qword[rdx+8],rax
 
 
         invoke printf, "aa %f",qword[obj+0]
-        
                         
 mov rdx,qword[obj+8]
         invoke printf, "%f",qword[rdx+0]
