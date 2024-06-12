@@ -352,21 +352,8 @@ function Parse(filePath,mainFile=false){
         ${functions.join('\n')}`
     })
     console.log('OBJECTS',OBJECTS)
-    /*source = source.replace(/this\.[a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+/gm,match=>{
-        var params = match.split(' ')
-        var OBJ=OBJECTS[params[4].replace('()','')]
-        OBJ.classes.push(params[1])
-        //OBJ.params.push(params[1])
-        //return `${params[1]} ${params[4].replace('()','')}`
-        var defs = ''
-        var paramIdx = 0
-        for(const param of OBJ.params){
-            defs += 'mov rax,'+param.value+'\nmov qword['+params[1]+'+'+paramIdx+'],rax\n'
-            paramIdx+=8
-        }
-        DATA.push(`${params[1]} dq ?`)
-        return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
-    })*/
+
+
     source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
@@ -382,6 +369,23 @@ function Parse(filePath,mainFile=false){
         DATA.push(`${params[1]} dq ?`)
         return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
     })
+    source = source.replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
+        var params = match.trim().split(' ')
+        console.log('params',params)
+        var OBJ=OBJECTS[params[3].replace('()','')]
+        OBJ.classes.push(params[0])
+        //OBJ.params.push(params[1])
+        //return `${params[1]} ${params[4].replace('()','')}`
+        var defs = ''
+        var paramIdx = 0
+        for(const param of OBJ.params){
+            defs += 'mov rax,'+param.value+'\nmov qword['+params[0]+'+'+paramIdx+'],rax\n'
+            paramIdx+=8
+        }
+        //DATA.push(`${params[0]} dq ?`)
+        return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[0]}],rax\n${defs}\n`
+    })
+    
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
         for(const param of OBJ.classes){
@@ -408,6 +412,7 @@ function Parse(filePath,mainFile=false){
 
     r(/\,\)/gm,')')
 
+    fs.writeFileSync('./cache/dump1.js',source)
 
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/(.*) = (.*\(.*)/gm,'$2\n$1 = rax')
@@ -419,7 +424,6 @@ function Parse(filePath,mainFile=false){
     })*/
 
     
-
 
 
 
@@ -558,12 +562,18 @@ function Parse(filePath,mainFile=false){
     r(/\[(.*)\] dq/gm,'$1 dq')
     r(/([a-zA-Z0-9\_]+)\.\[(.*)\]/gm,'[$1.$2]')
 
+    r(/\[qword\[(.*)+([0-9]+)\]\]/gm,'qword[$1+$2]')
+    r(/\]\]/gm,']+0]')
+    r(/(.*)\[qword\[(.*)\+([0-9]+)\]\+([0-9]+)\]/gm,'mov rdx,qword[$2+$3]\n$1qword[rdx+$4]')
+    r(/qwordqword/gm,'qword')
+
     var main = ''
     r(/macro main([\s\S]+?)end macro/gm,match=>{
         main=match.replace('macro main','').replace('end macro','')
         return ''
     })
-    
+
+
 
 
     if(mainFile){
