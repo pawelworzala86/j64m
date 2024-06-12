@@ -8,6 +8,7 @@ class TestClass{
         this.valB = new TTClass()
         printf('aa %f',this.valA)
         this.valB.print()
+        //printf('aa %f',this.valB.valA)
         return 45
     }
 }

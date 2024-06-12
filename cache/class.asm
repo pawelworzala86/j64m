@@ -67,6 +67,7 @@ mov rdx,qword[obj+8]
         invoke printf, "%f",qword[rdx+0]
         mov rax, 45
     
+        
         mov rax, 45
     
 mov rax,rax

@@ -22,6 +22,7 @@ mov qword[qword[self+8]+8],rax
 
         printf("aa %f",qword[self+0])
         TTClass_print(qword[self+8])
+        
         return 45
     
 :2}
