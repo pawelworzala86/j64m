@@ -413,7 +413,7 @@ function Parse(filePath,mainFile=false){
 
     r(/\,\)/gm,')')
 
-    fs.writeFileSync('./cache/dump1.js',source)
+    //fs.writeFileSync('./cache/dump1.js',source)
 
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/(.*) = (.*\(.*)/gm,'$2\n$1 = rax')
