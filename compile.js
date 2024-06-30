@@ -114,13 +114,13 @@ function Parse(filePath,mainFile=false){
             //const data = fs.readFileSync('./source/'+name).toString()
             //return parseSource(data)
             var parts = name.split('/')
-            console.log('parts',parts)
+            //console.log('parts',parts)
             if(parts.length>1){
                 try{
                 fs.mkdirSync('./cache/'+parts[0])
                 }catch(e){}
             }
-            console.log('NNMAME',name)
+            //console.log('NNMAME',name)
             Parse('./source/'+name.replace(/\"/gm,''))
             match=match.replace('.js','.asm')
         //}
@@ -392,10 +392,10 @@ function Parse(filePath,mainFile=false){
             
 
             var CLS = OBJECTS[name].cls
-            console.log('CLS',Object.keys(CLS))
+            //console.log('CLS',Object.keys(CLS))
             for(let clsK of Object.keys(CLS)){
                 var val = CLS[clsK]
-                console.log('CLSval',val)
+                //console.log('CLSval',val)
             data = data.replace(new RegExp('('+val.replace('.','\\.')+')\\.(.*) \\= (.*)','gm'),match=>{
                 var p1 = 'this.'+match.split('.')[1]
                 var v1 = match.split('=')[1].trim()
@@ -403,8 +403,8 @@ function Parse(filePath,mainFile=false){
                 var idx22=0
                 var ii=0
                 var pcprops = OBJECTS[clsK].params
-                console.log('PP CLS',pcprops)
-                console.log('PP CLS p2',p2)
+                //console.log('PP CLS',pcprops)
+                //console.log('PP CLS p2',p2)
                 for(let pp of pcprops){
                     if(pp.name==p2){
                         idx22=ii
@@ -465,7 +465,7 @@ mov qword[rax+${idx22*8}],rbx`
 
         OBJ.txt = OBJ.txt.replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.trim().split(' ')
-        console.log('params',params)
+        //console.log('params',params)
         var OBJ=OBJECTS[params[3].replace('()','')]
         //OBJ.classes.push(params[0])
         //OBJ.params.push(params[1])
@@ -690,7 +690,7 @@ mov qword[rax+${idx22*8}],rbx`
         GLFuncs.push(match)
         return match
     })
-    console.log('GLF',GLFuncs)
+    //console.log('GLF',GLFuncs)
 
     var gl64 = require('./build/make.js')
     gl64(GLFuncs)
