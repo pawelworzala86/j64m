@@ -1,7 +1,7 @@
 
-var handle = 0
-var fsize = 0
-var buffor = 0
+//var handle = 0
+//var fsize = 0
+//var buffor = 0
 
 class FS{
     constructor(){
@@ -15,10 +15,10 @@ class FS{
         this.fsize = GetFileSize(this.handle, 0)
         //mov this.fsize, rax
         //printf('fsize %i',fsize)
-        malloc(this.fsize)
-        mov buffor, rax
-        ReadFile(this.handle, buffor, this.fsize, 0, 0)
-        printf('%s',buffor)
+        this.buffor = malloc(this.fsize)
+        //mov this.buffor, rax
+        ReadFile(this.handle, this.buffor, this.fsize, 0, 0)
+        printf('%s',this.buffor)
         CloseHandle(this.handle)
     }
 }

@@ -25,6 +25,9 @@ buffor dq 0
 
 
 
+
+
+
 invoke malloc, 24
 mov [fs],rax
 mov rax,0
@@ -52,10 +55,12 @@ mov rax,rax
 mov         qword[fs+8],rax
         
         
-        invoke malloc, qword[fs+8]
-        mov [buffor], rax
-        invoke ReadFile, qword[fs+0], [buffor], qword[fs+8], 0, 0
-        invoke printf, "%s",[buffor]
+invoke malloc, qword[fs+8]
+mov rax,rax
+mov         qword[fs+16],rax
+        
+        invoke ReadFile, qword[fs+0], qword[fs+16], qword[fs+8], 0, 0
+        invoke printf, "%s",qword[fs+16]
         invoke CloseHandle, qword[fs+0]
     
                     
@@ -68,10 +73,12 @@ mov rax,rax
 mov         qword[fs+8],rax
         
         
-        invoke malloc, qword[fs+8]
-        mov [buffor], rax
-        invoke ReadFile, qword[fs+0], [buffor], qword[fs+8], 0, 0
-        invoke printf, "%s",[buffor]
+invoke malloc, qword[fs+8]
+mov rax,rax
+mov         qword[fs+16],rax
+        
+        invoke ReadFile, qword[fs+0], qword[fs+16], qword[fs+8], 0, 0
+        invoke printf, "%s",qword[fs+16]
         invoke CloseHandle, qword[fs+0]
     
                 
@@ -82,9 +89,6 @@ section '.data' data readable writeable
     lf db 13,10,0
 
     fs dq ?
-handle dq 0
-fsize dq 0
-buffor dq 0
 
 
 
