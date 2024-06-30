@@ -7,7 +7,8 @@ class TestClass{
     print(){
         this.valB = new TTClass()
         printf('aa %f',this.valA)
-        this.valB.print()
+        //this.valB.valA = 66.666
+        this.valB.print(66.666)
         //printf('aa %f',this.valB.valA)
         return 45
     }
@@ -18,8 +19,8 @@ class TTClass{
         this.valA = 4.33
         this.valB = 'kuku'
     }
-    print(){
-        printf('%f',this.valA)
+    print(valA){
+        printf('%f',valA)
         return 45
     }
 }
