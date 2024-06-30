@@ -335,7 +335,7 @@ function Parse(filePath,mainFile=false){
        return match
     })*/
 //}
-console.log('OBJECTS',OBJECTS)
+//console.log('OBJECTS',OBJECTS)
     var ClassINDEX = 0
     r(/^class([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
         var name = match.split(' ')[1].replace('{','').trim().split(':')[0]
@@ -443,7 +443,7 @@ mov qword[rax+${idx22*8}],rbx`
         ${functions.join('\n')}`
         return 'OBJ_'+name
     })
-    console.log('OBJECTS',OBJECTS)
+    //console.log('OBJECTS',OBJECTS)
 
     source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
@@ -516,7 +516,7 @@ mov qword[rax+${idx22*8}],rbx`
         var OBJ = OBJECTS[key]
         r(new RegExp('OBJ_'+key,'gm'),OBJ.txt+'\n\n\n')
     }
-    fs.writeFileSync('./cache/dump2.js',source)
+    //fs.writeFileSync('./cache/dump2.js',source)
 
     r(/\\\[/gm,'[')
     r(/\\\]/gm,']')
@@ -534,7 +534,7 @@ mov qword[rax+${idx22*8}],rbx`
         }
     }
     r(/this/gm,'self')
-    console.log('OBJECTS',OBJECTS)
+    //console.log('OBJECTS',OBJECTS)
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
         for(const klass of OBJ.classes){
@@ -549,7 +549,7 @@ mov qword[rax+${idx22*8}],rbx`
 
     r(/\,\)/gm,')')
 
-    fs.writeFileSync('./cache/dump1.js',source)
+    //fs.writeFileSync('./cache/dump1.js',source)
 
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/(.*) = (.*\(.*)/gm,'$2\n$1 = rax')
