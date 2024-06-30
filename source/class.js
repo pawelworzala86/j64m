@@ -1,4 +1,16 @@
 
+
+class TTClass{
+    constructor(){
+        this.valA = 4.33
+        this.valB = 'kuku'
+    }
+    print(){
+        printf('%i',this.valA)
+        return 45
+    }
+}
+
 class TestClass{
     constructor(){
         this.valA = 24.44
@@ -14,16 +26,7 @@ class TestClass{
     }
 }
 
-class TTClass{
-    constructor(){
-        this.valA = 4.33
-        this.valB = 'kuku'
-    }
-    print(){
-        printf('%i',this.valA)
-        return 45
-    }
-}
+
 
 
 

@@ -1,16 +1,39 @@
 
-struct TestClass
-            valA dq 24.44
+
+struct TTClass
+            valA dq 4.33
 valB dq "kuku"
         ends
-        function TestClass_constructor(self):1{
+        function TTClass_constructor(self):1{
 
-        valA dq 24.44
+        valA dq 4.33
         valB dq "kuku"
     
 :1}
 
-function TestClass_print(self):2{
+function TTClass_print(self):2{
+
+        printf("%i",qword[self+0])
+        return 45
+    
+:2}
+
+
+
+
+
+struct TestClass
+            valA dq 24.44
+valB dq "kuku"
+        ends
+        function TestClass_constructor(self):3{
+
+        valA dq 24.44
+        valB dq "kuku"
+    
+:3}
+
+function TestClass_print(self):4{
 
 invoke malloc, 16
 mov [qword[self+8]],rax
@@ -21,35 +44,21 @@ mov qword[qword[self+8]+8],rax
 
 
         printf("aa %f",qword[self+0])
+        mov rax,qword[self+8]
+mov rbx,66
+mov qword[rax+0],rbx
         
-                mov rax, qword[self+8]
-                mov rbx, 66
-                mov qword[rax+0],rbx
-                
         TTClass_print(qword[self+8])
+    
         
-        return 45
-    
-:2}
-
-
-struct TTClass
-            valA dq 4.33
-valB dq "kuku"
-        ends
-        function TTClass_constructor(self):3{
-
-        valA dq 4.33
-        valB dq "kuku"
-    
-:3}
-
-function TTClass_print(self):4{
-
-        printf("%i",qword[self+0])
         return 45
     
 :4}
+
+
+
+
+
 
 
 

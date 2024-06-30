@@ -298,8 +298,44 @@ function Parse(filePath,mainFile=false){
 
 
 
+    source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
+        var params = match.split(' ')
+        if(!OBJECTS[params[4].replace('()','')]){
+            OBJECTS[params[4].replace('()','')]={classes:[],}
+        }
+        var OBJ=OBJECTS[params[4].replace('()','')]
+        OBJ.classes.push(params[1])
+        //OBJ.params.push(params[1])
+        //return `${params[1]} ${params[4].replace('()','')}`
+        //var defs = ''
+        //var paramIdx = 0
+        //for(const param of OBJ.params){
+        //    defs += 'mov rax,'+param.value+'\nmov qword['+params[1]+'+'+paramIdx+'],rax\n'
+        //    paramIdx+=8
+        //}
+        //DATA.push(`${params[1]} dq ?`)
+        //return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
+        return match
+    })
+    ///for(let key of Object.keys(OBJECTS)){
+        //var OBJ = OBJECTS[key]
 
-
+   /* source = source.replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
+        var params = match.trim().split(' ')
+        console.log('params',params)
+        if(!OBJECTS[params[3].replace('()','')]){
+            OBJECTS[params[3].replace('()','')]={classes:[],}
+        }
+        var OBJ=OBJECTS[params[3].replace('()','')]
+        OBJ.classes.push(params[0])
+        //OBJ.params.push(params[1])
+        //return `${params[1]} ${params[4].replace('()','')}`
+        //DATA.push(`${params[0]} dq ?`)
+       // return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[0]}],rax\n${defs}\n`
+       return match
+    })*/
+//}
+console.log('OBJECTS',OBJECTS)
     var ClassINDEX = 0
     r(/^class([\s\S]+?)(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,match=>{
         var name = match.split(' ')[1].replace('{','').trim().split(':')[0]
@@ -319,16 +355,33 @@ function Parse(filePath,mainFile=false){
             })
             return mmm
         })
+        var fdata=[]
         match=match.replace(/[a-zA-Z0-9]+\(.*(?<num>\:[0-9]+)\{([\s\S]+?)(\k<num>)\}/gm,mmm=>{
             var fname=mmm.split('(')[0].trim().substring(-5)
             var params=mmm.split('(')[1].split(')')[0].trim()
             var data=mmm.split('{')[1]
             data=data.substring(0,data.length-6)
             funcs[fname] = {data:data,params}
+            fdata.push(data)
             return ''
         })
 
-        OBJECTS[name]={name,fields:fields,funcs,params:paramsS,classes:[]}
+
+
+        OBJECTS[name]=Object.assign({name,fields:fields,funcs,params:paramsS,classes:[],cls:[]},OBJECTS[name])
+        
+        fdata.join('\n').replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
+            var params = match.trim().split(' ')
+            //console.log('params',params)
+            //var OBJ=OBJECTS[params[3].replace('()','')]
+            OBJECTS[name].cls[params[3].replace('()','')]=params[0]
+            //OBJ.params.push(params[1])
+            //return `${params[1]} ${params[4].replace('()','')}`
+            //DATA.push(`${params[0]} dq ?`)
+           // return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[0]}],rax\n${defs}\n`
+           return match
+        })
+
 
         var functions = []
         for(const func of Object.keys(funcs)){
@@ -336,6 +389,42 @@ function Parse(filePath,mainFile=false){
             var data = FUNC.data
             var params = FUNC.params
             params=params.length?(','+params):''
+            
+
+            var CLS = OBJECTS[name].cls
+            console.log('CLS',Object.keys(CLS))
+            for(let clsK of Object.keys(CLS)){
+                var val = CLS[clsK]
+                console.log('CLSval',val)
+            data = data.replace(new RegExp('('+val.replace('.','\\.')+')\\.(.*) \\= (.*)','gm'),match=>{
+                var p1 = 'this.'+match.split('.')[1]
+                var v1 = match.split('=')[1].trim()
+                var p2 = match.split('.')[2].split('=')[0]
+                var idx22=0
+                var ii=0
+                var pcprops = OBJECTS[clsK].params
+                console.log('PP CLS',pcprops)
+                console.log('PP CLS p2',p2)
+                for(let pp of pcprops){
+                    if(pp.name==p2){
+                        idx22=ii
+                    }
+                    ii++
+                }
+return `mov rax,${p1}
+mov rbx,${v1}
+mov qword[rax+${idx22*8}],rbx`
+                })
+                data = data.replace(new RegExp('('+val.replace('.','\\.')+')\\.(.*)\\((.*)\\)','gm'),match=>{
+                    var p1 = 'this.'+match.split('.')[1]
+                    var p2 = match.split('.')[2].split('=')[0].replace('()','')
+                    var prps = match.split('(')[1].split(')')[0].trim()
+    return `
+        ${clsK}_${p2}(${p1},${prps})
+    `
+                    })
+            }
+
             data = data.replace(/this\.([a-zA-Z0-9\_]+)\(/gm,name+'_$1(self,')
             var paramIdx = 0
             for(const param of paramsS){
@@ -346,17 +435,20 @@ function Parse(filePath,mainFile=false){
             functions.push('function '+name+'_'+func+'(this'+params+'):'+ClassINDEX+'{\n'+data+'\n:'+ClassINDEX+'}\n')
         }
 
-        return `struct ${name}
+       
+
+        OBJECTS[name].txt = `struct ${name}
             ${(fields.join('\n'))}
         ends
         ${functions.join('\n')}`
+        return 'OBJ_'+name
     })
     console.log('OBJECTS',OBJECTS)
 
     source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
-        OBJ.classes.push(params[1])
+        //OBJ.classes.push(params[1])
         //OBJ.params.push(params[1])
         //return `${params[1]} ${params[4].replace('()','')}`
         var defs = ''
@@ -368,11 +460,14 @@ function Parse(filePath,mainFile=false){
         DATA.push(`${params[1]} dq ?`)
         return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[1]}],rax\n${defs}\n`
     })
-    source = source.replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
+    for(let key of Object.keys(OBJECTS)){
+        var OBJ = OBJECTS[key]
+
+        OBJ.txt = OBJ.txt.replace(/(.*) = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.trim().split(' ')
         console.log('params',params)
         var OBJ=OBJECTS[params[3].replace('()','')]
-        OBJ.classes.push(params[0])
+        //OBJ.classes.push(params[0])
         //OBJ.params.push(params[1])
         //return `${params[1]} ${params[4].replace('()','')}`
         var defs = ''
@@ -384,17 +479,17 @@ function Parse(filePath,mainFile=false){
         //DATA.push(`${params[0]} dq ?`)
         return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[0]}],rax\n${defs}\n`
     })
+}
 
 
-
-    for(let key of Object.keys(OBJECTS)){
+    /*for(let key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
         for(let className of OBJ.classes){
             className=className.replace('[','\\[')
             className=className.replace(']','\\]')
             className=className.replace('+','\\+')
             console.log('FIELD',className)
-            r(new RegExp(''+className+'\\.([a-zA-Z0-9\\_]+) \\= ([a-zA-Z0-9\\_\\,\\.]+)','gm'),match=>{
+            OBJ.txt=OBJ.txt.replace(new RegExp(''+className+'\\.([a-zA-Z0-9\\_]+) \\= ([a-zA-Z0-9\\_\\,\\.]+)','gm'),match=>{
                 var field = match.split('.')[1].split('=')[0].trim()
                 var value = match.split('.')[1].split('=')[1].trim()
                 console.log('FIELD..',key,field)
@@ -416,6 +511,10 @@ function Parse(filePath,mainFile=false){
                 `
             })
         }
+    }*/
+    for(let key of Object.keys(OBJECTS)){
+        var OBJ = OBJECTS[key]
+        r(new RegExp('OBJ_'+key,'gm'),OBJ.txt+'\n\n\n')
     }
     fs.writeFileSync('./cache/dump2.js',source)
 
@@ -478,7 +577,7 @@ function Parse(filePath,mainFile=false){
         body.splice(0,1)
         body.splice(body.length-1,1)
         body = body.join('\n')
-        console.log(name,params,body)
+        //console.log(name,params,body)
         if(name.indexOf('Proc')>-1){
             return `proc ${name} ${params}
             ${body}
@@ -545,7 +644,7 @@ function Parse(filePath,mainFile=false){
             return ''
         }
     })
-    console.log('MACRO',MACRO)
+   // console.log('MACRO',MACRO)
 
     //   nizej podmiana iteracja numerów funkcji lokalnych
     function switchMacro(){
@@ -553,7 +652,7 @@ function Parse(filePath,mainFile=false){
             r(new RegExp('('+macro+')\\((.*)\\)','gm'),match=>{
                 var name = match.split('(')[0].trim()
                 var params = match.split('(')[1].split(')')[0].trim()
-                console.log('NM',name)
+                //console.log('NM',name)
                 var res = MACRO[name].body//.split('\n')
                 //res.splice(0,1)
                 //res.splice(res.length-1,1)

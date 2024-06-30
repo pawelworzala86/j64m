@@ -11,6 +11,19 @@ include 'include\\opengl.inc'
 section '.text' code readable executable
 
 
+
+struct TTClass
+            valA dq 4.33
+valB dq "kuku"
+        ends
+        
+
+
+
+
+
+
+
 struct TestClass
             valA dq 24.44
 valB dq "kuku"
@@ -20,11 +33,7 @@ valB dq "kuku"
 
 
 
-struct TTClass
-            valA dq 4.33
-valB dq "kuku"
-        ends
-        
+
 
 
 
@@ -62,15 +71,15 @@ mov qword[rdx+8],rax
 
 
         invoke printf, "aa %f",qword[obj+0]
+        mov rax,qword[obj+8]
+mov rbx,66
+mov qword[rax+0],rbx
         
-                mov rax, qword[obj+8]
-                mov rbx, 66
-                mov qword[rax+0],rbx
-                
                         
 mov rdx,qword[obj+8]
         invoke printf, "%i",qword[rdx+0]
         mov rax, 45
+    
     
         
         mov rax, 45
