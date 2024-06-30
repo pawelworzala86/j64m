@@ -353,7 +353,6 @@ function Parse(filePath,mainFile=false){
     })
     console.log('OBJECTS',OBJECTS)
 
-
     source = source.replace(/var [a-zA-Z0-9\_\.]+ = new [a-zA-Z0-9]+\(\)/gm,match=>{
         var params = match.split(' ')
         var OBJ=OBJECTS[params[4].replace('()','')]
@@ -385,6 +384,44 @@ function Parse(filePath,mainFile=false){
         //DATA.push(`${params[0]} dq ?`)
         return `invoke malloc, ${OBJ.params.length*8}\nmov [${params[0]}],rax\n${defs}\n`
     })
+
+
+
+    for(let key of Object.keys(OBJECTS)){
+        var OBJ = OBJECTS[key]
+        for(let className of OBJ.classes){
+            className=className.replace('[','\\[')
+            className=className.replace(']','\\]')
+            className=className.replace('+','\\+')
+            console.log('FIELD',className)
+            r(new RegExp(''+className+'\\.([a-zA-Z0-9\\_]+) \\= ([a-zA-Z0-9\\_\\,\\.]+)','gm'),match=>{
+                var field = match.split('.')[1].split('=')[0].trim()
+                var value = match.split('.')[1].split('=')[1].trim()
+                console.log('FIELD..',key,field)
+                var ppp
+                var idx=0
+                for(let paramm of OBJ.params){
+                    if(paramm.name==field){
+                        ppp=param
+                        break
+                    }
+                    idx++
+                }
+                console.log('PP..',OBJ.params[0])
+                //return match
+                return `
+                mov rax, ${className}
+                mov rbx, ${value}
+                mov qword[rax+${idx*8}],rbx
+                `
+            })
+        }
+    }
+    fs.writeFileSync('./cache/dump2.js',source)
+
+    r(/\\\[/gm,'[')
+    r(/\\\]/gm,']')
+    r(/\\\+/gm,'+')
     
     for(const key of Object.keys(OBJECTS)){
         var OBJ = OBJECTS[key]
@@ -413,7 +450,7 @@ function Parse(filePath,mainFile=false){
 
     r(/\,\)/gm,')')
 
-    //fs.writeFileSync('./cache/dump1.js',source)
+    fs.writeFileSync('./cache/dump1.js',source)
 
     r(/var (.*) = (.*\(.*)/gm,'$2\n$1 = rax')
     r(/(.*) = (.*\(.*)/gm,'$2\n$1 = rax')
