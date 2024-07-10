@@ -710,13 +710,15 @@ mov qword[rax+${idx22*8}],rbx`
     r(/(.*)\[qword\[(.*)\+([0-9]+)\]\+([0-9]+)\]/gm,'mov rdx,qword[$2+$3]\n$1qword[rdx+$4]')
     r(/qwordqword/gm,'qword')
 
+    r(/mov\ rax\,rax/gm,'')
+
     var main = ''
     r(/macro main([\s\S]+?)end macro/gm,match=>{
         main=match.replace('macro main','').replace('end macro','')
         return ''
     })
 
-    r(/mov rax,rax/gm,'')
+    
 
 
 

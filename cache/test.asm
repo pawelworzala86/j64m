@@ -29,10 +29,10 @@ include "math.asm"
 
      
                                     mov rax, [prop1]
-mov rax,rax
+
 mov     [aF],rax
                         mov rax, 4.44
-mov rax,rax
+
 invoke printf, "OK %f",rax
                         mov rax, 1
 mov rbx, 2
