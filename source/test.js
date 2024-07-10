@@ -10,7 +10,7 @@ function testF(){
     }
 }
 
-function testRET(){
+function testRET(inP){
     return prop1
 }
 
@@ -18,7 +18,7 @@ var aF = 9.9
 
 function main(){
     aF = testRET()
-    printf('OK %f',testRET())
+    printf('OK %f',testRET(4.44))
     testF()
     testF()
     prop3 = prop3 * prop1
