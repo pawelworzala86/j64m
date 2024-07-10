@@ -13,6 +13,8 @@ section '.text' code readable executable
 
 
 
+include "fs.asm"
+
 
 
 
@@ -35,52 +37,56 @@ proc ProcInit
                 invoke printf, "OK"
 
 
-invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0;
-mov rax,rax
-mov 	[handle],rax
-invoke GetFileSize, [handle], 0;
-mov rax,rax
-mov     [fsize],rax
-invoke malloc, [fsize];
-mov rax,rax
-mov     [buffor],rax
-    invoke ReadFile, [handle], [buffor], [fsize], 0, 0;
+	
+
+	                    invoke CreateFileA, "default.vert", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+    mov [handle], rax
+    invoke GetFileSize, [handle], 0
+    mov [fsize], rax
+    
+    invoke malloc, [fsize]
+    mov [buffor], rax
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0
+    
+    invoke CloseHandle, [handle]
 
 	
 
 invoke glCreateShader, GL_VERTEX_SHADER;
-mov rax,rax
+
 mov 	[vertexShader],rax
 lea rax, [buffor]
 lea rbx, [fsize]
 invoke     glShaderSource, [vertexShader],1, rax, rbx;
 invoke     glCompileShader, [vertexShader];
 
-	invoke CloseHandle, [handle]
+	
 
-invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0;
-mov rax,rax
-mov 	[handle],rax
-invoke GetFileSize, [handle], 0;
-mov rax,rax
-mov     [fsize],rax
-invoke malloc, [fsize];
-mov rax,rax
-mov     [buffor],rax
-    invoke ReadFile, [handle], [buffor], [fsize], 0, 0;
+	
+
+	                    invoke CreateFileA, "default.frag", GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0
+    mov [handle], rax
+    invoke GetFileSize, [handle], 0
+    mov [fsize], rax
+    
+    invoke malloc, [fsize]
+    mov [buffor], rax
+    invoke ReadFile, [handle], [buffor], [fsize], 0, 0
+    
+    invoke CloseHandle, [handle]
 
 invoke glCreateShader, GL_FRAGMENT_SHADER;
-mov rax,rax
+
 mov 	[fragmentShader],rax
 lea rax, [buffor]
 lea rbx, [fsize]
 invoke     glShaderSource, [fragmentShader],1, rax, rbx;
 invoke     glCompileShader, [fragmentShader];
 
-	invoke CloseHandle, [handle]
+	
 
 invoke glCreateProgram, ;
-mov rax,rax
+
 mov 	[programID],rax
 invoke     glAttachShader, [programID], [vertexShader];
 invoke     glAttachShader, [programID], [fragmentShader];
@@ -263,11 +269,11 @@ section '.data' data readable writeable
 
   lf db 13,10,0
 
-	VAO dq 0
-bufferID dq 0
-handle dq 0
+	handle dq 0
 fsize dq 0
 buffor dq 0
+VAO dq 0
+bufferID dq 0
 vertexShader dq 0
 fragmentShader dq 0
 programID dq 0

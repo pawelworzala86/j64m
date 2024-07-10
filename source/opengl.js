@@ -1,5 +1,7 @@
 //app:gl
 
+import 'fs.js'
+
 var vertices = [1.0,0.9,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0]
 var vertices2 = [1.0,1.0,0.0,1.0,-1.0,0.0,-1.0,-1.0,0.0,1.0,1.0,0.0,-1.0,-1.0,0.0,-1.0,1.0,0.0]
 var coords = [1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0]
@@ -18,9 +20,9 @@ function CreateBuffer(posID,ssize,length,array){
 	glVertexAttribPointer(posID,ssize,GL_DOUBLE,GL_FALSE, ssize*8, 0)
 }
 
-var handle = 0
-var fsize = 0
-var buffor = 0
+//var handle = 0
+//var fsize = 0
+//var buffor = 0
 
 var vertexShader = 0
 var fragmentShader = 0
@@ -31,10 +33,12 @@ function ProcInit(){
     printf('OK')
 
 
-	handle = CreateFileA('default.vert', GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0);
+	/*handle = CreateFileA('default.vert', GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0);
     fsize = GetFileSize(handle, 0);
     buffor = malloc(fsize);
-    ReadFile(handle, buffor, fsize, 0, 0);
+    ReadFile(handle, buffor, fsize, 0, 0);*/
+
+	ReadFileSync('default.vert')
 
 	//printf('shader %s', buffor)
 
@@ -42,18 +46,20 @@ function ProcInit(){
     glShaderSource(vertexShader,1, &buffor, &fsize);
     glCompileShader(vertexShader);
 
-	CloseHandle(handle)
+	//CloseHandle(handle)
 
-	handle = CreateFileA('default.frag', GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0);
+	/*handle = CreateFileA('default.frag', GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0);
     fsize = GetFileSize(handle, 0);
     buffor = malloc(fsize);
-    ReadFile(handle, buffor, fsize, 0, 0);
+    ReadFile(handle, buffor, fsize, 0, 0);*/
+
+	ReadFileSync('default.frag')
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader,1, &buffor, &fsize);
     glCompileShader(fragmentShader);
 
-	CloseHandle(handle)
+	//CloseHandle(handle)
 
 	programID = glCreateProgram();
     glAttachShader(programID, vertexShader);

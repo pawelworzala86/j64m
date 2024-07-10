@@ -9,7 +9,7 @@ class FS{
         this.fsize = 0
         this.buffor = 0
     }
-    ReadFileData(fileName){
+    ReadFileSync(fileName){
         this.handle = CreateFileA(fileName, GENERIC_READ,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL, 0)
         //mov this.handle, rax
         this.fsize = GetFileSize(this.handle, 0)
