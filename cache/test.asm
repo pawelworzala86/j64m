@@ -19,8 +19,21 @@ include "math.asm"
 
 
 
-macro main 
-                    invoke printf, "OK %f",[prop1]
+
+
+
+
+
+    start:
+    sub	rsp,8		; Make stack dqword aligned
+
+     
+                                    mov rax, [prop1]
+mov rax,rax
+mov     [aF],rax
+                        mov rax, [prop1]
+mov rax,rax
+invoke printf, "OK %f",rax
                         mov rax, 1
 mov rbx, 2
 cmp rax, rbx
@@ -47,12 +60,7 @@ jmp .endif23
 mov rax,[mth1]
 mov     [prop3],rax
     invoke printf, "OK %f",[prop3]
-                end macro
-
-    start:
-    sub	rsp,8		; Make stack dqword aligned
-
-    main
+                
 
     invoke	ExitProcess,0
 
@@ -63,6 +71,8 @@ section '.data' data readable writeable
 prop1 dq 23.99
 prop2 dq "END"
 prop3 dq 2.23
+aF dq 9.9
+
 
 
 section '.idata' import data readable writeable

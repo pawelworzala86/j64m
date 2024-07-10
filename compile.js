@@ -137,6 +137,13 @@ function Parse(filePath,mainFile=false){
             index++
             return REGISTERS[index-1]
         })
+        line=line.replace(/([a-zA-Z0-9\_]+)\((.*)([a-zA-Z0-9\_]+\(.*\))\)/gm,match=>{
+            var params = /([a-zA-Z0-9\_]+)\((.*)\,([a-zA-Z0-9\_]+\(.*\))(.*)\)/gm.exec(match)
+            console.log('PRMSSS',params)
+            index++
+            var reg=REGISTERS[index-1]
+            return params[3]+'\nmov '+reg+',rax\n'+params[1]+'('+params[2]+','+reg+','+params[4]+')'
+        })
         return prefix+line
     })
     source = lines.join('\n')
