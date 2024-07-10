@@ -18,14 +18,14 @@ class FS{
         this.buffor = malloc(this.fsize)
         //mov this.buffor, rax
         ReadFile(this.handle, this.buffor, this.fsize, 0, 0)
-        printf('%s',this.buffor)
+        //printf('%s',this.buffor)
         CloseHandle(this.handle)
     }
 }
 
 var fs = new FS()
 
-function main(){
+/*function main(){
     fs.ReadFileData('default.frag')
     fs.ReadFileData('default.vert')
-}
+}*/
