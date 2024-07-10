@@ -11,13 +11,13 @@ function testF(){
 }
 
 function testRET(inP){
-    return prop1
+    return inP
 }
 
 var aF = 9.9
 
 function main(){
-    aF = testRET()
+    aF = testRET(prop1)
     printf('OK %f',testRET(4.44))
     testF()
     testF()
