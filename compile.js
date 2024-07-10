@@ -716,6 +716,7 @@ mov qword[rax+${idx22*8}],rbx`
         return ''
     })
 
+    r(/mov rax,rax/gm,'')
 
 
 
